@@ -58,6 +58,10 @@
 <span id="55">55</span>
 <span id="56">56</span>
 <span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">wasm_bindgen</span>;
 <span class="kw">use</span> <span class="ident">wasm_bindgen</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
@@ -113,8 +117,12 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Moveable</span> {
     <span class="ident">Allowed</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="ident">Occupied</span> <span class="op">=</span> <span class="number">1</span>,
-    <span class="ident">OutOfBounds</span> <span class="op">=</span> <span class="number">2</span>,
+    <span class="ident">UnoccupiedSrc</span> <span class="op">=</span> <span class="number">1</span>,
+    <span class="ident">OccupiedDest</span> <span class="op">=</span> <span class="number">2</span>,
+    <span class="ident">OutOfBounds</span> <span class="op">=</span> <span class="number">3</span>,
+    <span class="ident">Unplayable</span> <span class="op">=</span> <span class="number">4</span>,
+    <span class="ident">WrongTeamSrc</span> <span class="op">=</span> <span class="number">5</span>,
+    <span class="ident">IllegalTrajectory</span> <span class="op">=</span> <span class="number">6</span>,
 }</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="draught" data-search-js="../../../search-index.js"></div>
     <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
