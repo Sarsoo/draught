@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Sarsoo/draught#readme",
   "dependencies": {
-    "gameoflife": "file:../pkg"
+    "draught": "file:../pkg"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^9.0.0",

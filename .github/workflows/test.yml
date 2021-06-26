@@ -24,21 +24,27 @@ jobs:
       - name: Test WASM in-browser
         run: wasm-pack test --firefox --chrome --headless
 
-      # - name: Install Node
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: 16
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
 
-      # - name: Install Node Modules
-      #   run: npm ci
-      #   working-directory: ./www
+      - name: Install Node Modules
+        run: npm ci
+        working-directory: ./www
 
-      # - name: Build Js
-      #   run: npm run build --if-present
-      #   working-directory: ./www
+      - name: Build Js
+        run: npm run build --if-present
+        working-directory: ./www
 
-      # - name: Deploy To Pages
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./www/dist
+      - name: Build Docs
+        run: cargo doc --no-deps --document-private-items
+
+      - name: Move Docs to Staging Directory
+        run: mv target/doc www/dist/
+
+      - name: Deploy To Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./www/dist
