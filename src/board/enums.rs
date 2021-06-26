@@ -52,6 +52,10 @@ impl Display for SquareState {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Moveable {
     Allowed = 0,
-    Occupied = 1,
-    OutOfBounds = 2,
+    UnoccupiedSrc = 1,
+    OccupiedDest = 2,
+    OutOfBounds = 3,
+    Unplayable = 4,
+    WrongTeamSrc = 5,
+    IllegalTrajectory = 6,
 }
