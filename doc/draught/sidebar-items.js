@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["__wasm_bindgen_generated_init_game",""],["init_game",""]],"macro":[["log",""]],"mod":[["board",""],["game",""],["utils",""]]});

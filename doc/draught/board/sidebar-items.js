@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["STD_HEIGHT",""],["STD_WIDTH",""]],"mod":[["enums",""],["iter",""]],"struct":[["Board","Models a single state for a checkers board"],["BrdIdx",""],["Direction",""],["Piece",""],["Square",""]]});
