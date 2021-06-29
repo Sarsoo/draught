@@ -1,5 +1,7 @@
 //! Board module for components related to the checkers board and game structure
 
+#[cfg(test)] pub mod tests;
+
 pub mod enums;
 use enums::*;
 
@@ -366,62 +368,161 @@ impl Board {
             return Moveable::OutOfBounds;
         }
 
+        if to.row > self.height - 1 || to.col > self.width - 1 {
+            return Moveable::OutOfBounds;
+        }
+
         let from_square = self.cell(self.cell_idx(from));
 
+        // check source square is occupied
         match from_square.state {
-            Empty => return Moveable::UnoccupiedSrc,
-            Unplayable => return Moveable::Unplayable,
-            Occupied => {
+            SquareState::Empty => return Moveable::UnoccupiedSrc,
+            SquareState::Unplayable => return Moveable::Unplayable,
+            SquareState::Occupied => {
 
                 // if its not the current teams piece then error
                 match from_square.occupant {
+                    // weird error, shouldn't happen
                     None => panic!("Square is apparently occupied, but no occupant was found from: {}, to: {}, square: {:?}", from, to, from_square),
-                    Some(x) => {
+                    Some(from_square_occupant) => {
 
                         // piece in the source square is not for the current turn's player
-                        if x.team != self.current_turn {
+                        if from_square_occupant.team != self.current_turn {
                             return Moveable::WrongTeamSrc;
                         }
 
+                        // cast to signed ints so that -1 will work for black moves
+                        let row_diff: i32 = to.row as i32 - from.row as i32;
+                        let col_diff: i32 = to.col as i32 - from.col as i32;
+
+                        // depending on whether the piece is a king or not, the piece can make different moves
                         // TODO: refactor to a IsMove()/IsJump() to check whether the move has a legal trajectory
-                        match x.strength {
-                            Man => {
-                                match self.current_turn {
-                                    Black => {
-                                        
-                                    },
-                                    White => {
-
-                                    },
-                                };
-                            },
-                            King => {
-                                match self.current_turn {
-                                    Black => {
-
-                                    },
-                                    White => {
-
-                                    },
-                                };
-                            },
+                        match from_square_occupant.strength {
+                            Strength::Man => self.validate_man_move(from, to, row_diff, col_diff, from_square_occupant),
+                            Strength::King => self.validate_king_move(from, to, row_diff, col_diff, from_square_occupant),
                         };
-
-                        // let diagonal = self.adjacent_dir(from);
-                        // let allowable_squares = Vec::with_capacity(4);
-
-                        let jumpable = self.jumpable_dir(from);
                     }
                 }
             },
         }
 
-        // let is_adjacent = match self.current_turn {
-        //     Team::Black => diagonal.nw,
-        //     Team::White => {},
-        // }
-
         Moveable::Allowed
+    }
+
+    pub fn validate_man_move(&self, from: BrdIdx, to: BrdIdx, row_diff: i32, col_diff: i32, from_square_occupant: Piece) -> Moveable {
+        // men can only move forwards, below is row difference for each team
+        let idx_scale: i32 = match self.current_turn {
+            Team::Black => -1,
+            Team::White => 1,
+        };
+
+        // legal standard move 
+        if row_diff == idx_scale {
+            // destination is directly to the left or right
+            if col_diff.abs() == 1 {
+                return Moveable::Allowed;
+            } 
+            // illegal, not adjacently diagional
+            else {
+                return Moveable::IllegalTrajectory;
+            }
+        }
+        // legal jump move trajectory
+        else if row_diff == 2 * idx_scale {
+            // destination is directly to the left or right
+            if col_diff.abs() == 2 {
+
+                // piece to be jumped over
+                let jumpee = self.get_jumpee(from, row_diff, col_diff);
+                match jumpee.state {
+                    SquareState::Empty => Moveable::NoJumpablePiece,
+                    SquareState::Unplayable => panic!("Found an unplayable piece to try to jump over, from: {}, to: {}, jumpee: {:?}", from, to, jumpee),
+                    SquareState::Occupied => {
+
+                        // check whether jumpee is an opponent's piece
+                        return Board::validate_jumpee(jumpee, from, to, from_square_occupant);
+                    },
+                }
+            } 
+            // illegal, not adjacently diagional
+            else {
+                return Moveable::IllegalTrajectory;
+            }
+        }
+        // illegal, not adjacently diagonal
+        else {
+            return Moveable::IllegalTrajectory;
+        }
+    }
+
+    pub fn validate_king_move(&self, from: BrdIdx, to: BrdIdx, row_diff: i32, col_diff: i32, from_square_occupant: Piece) -> Moveable {
+        // legal standard move 
+        if row_diff.abs() == 1 {
+            // destination is directly to the left or right
+            if col_diff.abs() == 1 {
+                return Moveable::Allowed;
+            } 
+            // illegal, not adjacently diagional
+            else {
+                return Moveable::IllegalTrajectory;
+            }
+        }
+        // legal jump move trajectory
+        else if row_diff.abs() == 2 {
+            // destination is directly to the left or right
+            if col_diff.abs() == 2 {
+
+                // piece to be jumped over
+                let jumpee = self.get_jumpee(from, row_diff, col_diff);
+                match jumpee.state {
+                    SquareState::Empty => Moveable::NoJumpablePiece,
+                    SquareState::Unplayable => panic!("Found an unplayable piece to try to jump over, from: {}, to: {}, jumpee: {:?}", from, to, jumpee),
+                    SquareState::Occupied => {
+
+                        // check whether jumpee is an opponent's piece
+                        return Board::validate_jumpee(jumpee, from, to, from_square_occupant);
+                    },
+                }
+            } 
+            // illegal, not adjacently diagional
+            else {
+                return Moveable::IllegalTrajectory;
+            }
+        }
+        // illegal, not adjacently diagonal
+        else {
+            return Moveable::IllegalTrajectory;
+        }
+    }
+
+    pub fn get_jumpee(&self, from: BrdIdx, row_diff: i32, col_diff: i32) -> Square {
+        self.cell(
+            self.cell_idx(
+                BrdIdx::from(
+                    ((from.row as i32) + row_diff / 2) as usize, 
+                    ((from.col as i32) + col_diff / 2) as usize)
+                )
+            )
+    }
+
+    pub fn validate_jumpee(jumpee: Square, from: BrdIdx, to: BrdIdx, from_occ: Piece) -> Moveable {
+        // check whether jumpee is an opponent's piece
+        match jumpee.occupant {
+            None => panic!("No occupant found when checking the jumpee, from: {}, to: {}, jumpee: {:?}", from, to, jumpee),
+            Some(jumpee_occupant_uw) => {
+                if Board::check_jumpee_team(from_occ, jumpee_occupant_uw) {
+                    return Moveable::Allowed;
+                }
+                else {
+                    return Moveable::JumpingSameTeam;
+                }
+            },
+        }
+    }
+
+
+    pub fn check_jumpee_team(from: Piece, jumpee: Piece) -> bool {
+        return from.team.opponent() == jumpee.team
     }
 
     /// Iniitalise a game board without game pieces
@@ -525,208 +626,5 @@ impl Display for Board {
         }
 
         write!(f, "{}", string)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use wasm_bindgen_test::*;
-    use crate::log;
-
-    wasm_bindgen_test_configure!(run_in_browser);
-
-    #[wasm_bindgen_test]
-    fn create() {
-        let board = Board::new(STD_WIDTH, STD_HEIGHT);
-        assert!(true);
-    }
-
-    #[wasm_bindgen_test]
-    fn std_num_cells() {
-        let board = Board::new(8, 8);
-        assert_eq!(64, board.num_cells());
-    }
-
-    //////////////
-    // INDEXING
-    //////////////
-
-    #[wasm_bindgen_test]
-    fn cell_index_top_left() {
-        let board = Board::new(8, 8);
-        assert_eq!(0, board.cell_index(0, 0));
-    }
-
-    #[wasm_bindgen_test]
-    fn cell_index_central() {
-        let board = Board::new(8, 8);
-        assert_eq!(9, board.cell_index(1, 1));
-    }
-
-    #[wasm_bindgen_test]
-    fn cell_index_central_2() {
-        let board = Board::new(8, 8);
-        assert_eq!(17, board.cell_index(2, 1));
-    }
-
-    #[wasm_bindgen_test]
-    fn board_index() {
-        let board = Board::new(8, 8);
-
-        // first row
-        assert_eq!(BrdIdx::from(0, 5), board.board_index(5));
-        // second row
-        assert_eq!(BrdIdx::from(1, 6), board.board_index(14));
-        // third row
-        assert_eq!(BrdIdx::from(2, 4), board.board_index(20));
-    }
-
-    ///////////////////
-    // SQUARE STATE
-    ///////////////////
-
-    #[wasm_bindgen_test]
-    fn first_square_unplayable() {
-        let board = Board::new(8, 8);
-        assert_eq!(SquareState::Unplayable, board.cell_state(board.cell_index(0, 0)));
-    }
-
-    #[wasm_bindgen_test]
-    fn first_square_row_5_unplayable() {
-        let board = Board::new(8, 8);
-        assert_eq!(SquareState::Empty, board.cell_state(board.cell_index(5, 0)));
-    }
-
-    //////////////////////
-    // DIAGNOAL INDICES
-    //////////////////////
-
-    #[wasm_bindgen_test]
-    fn moveable_indices_unplayable() {
-        let board = Board::new(8, 8);
-        assert_eq!(None, board.diagonal_indices(BrdIdx::from(7, 7)));
-        assert_eq!(None, board.diagonal_indices(BrdIdx::from(0, 0)));
-        assert_eq!(None, board.diagonal_indices(BrdIdx::from(1, 1)));
-    }
-
-    #[wasm_bindgen_test]
-    fn moveable_indices_central() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![1, 3, 17, 19]), board.diagonal_indices(BrdIdx::from(1, 2)));
-    }
-
-    #[wasm_bindgen_test]
-    fn moveable_indices_top_row() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![8, 10]), board.diagonal_indices(BrdIdx::from(0, 1)));
-    }
-
-    #[wasm_bindgen_test]
-    fn moveable_indices_left_column() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![1, 17]), board.diagonal_indices(BrdIdx::from(1, 0)));
-    }
-
-    #[wasm_bindgen_test]
-    fn moveable_indices_bottom_row() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![49, 51]), board.diagonal_indices(BrdIdx::from(7, 2)));
-    }
-
-    #[wasm_bindgen_test]
-    fn moveable_indices_right_column() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![14, 30]), board.diagonal_indices(BrdIdx::from(2, 7)));
-    }
-
-    #[wasm_bindgen_test]
-    fn moveable_indices_top_right() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![14]), board.diagonal_indices(BrdIdx::from(0, 7)));
-    }
-
-    #[wasm_bindgen_test]
-    fn moveable_indices_bottom_left() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![49]), board.diagonal_indices(BrdIdx::from(7, 0)));
-    }
-
-    //////////////////////
-    // JUMPABLE INDICES
-    //////////////////////
-
-    #[wasm_bindgen_test]
-    fn jumpable_indices_unplayable() {
-        let board = Board::new(8, 8);
-        assert_eq!(None, board.jumpable_indices(BrdIdx::from(7, 7)));
-        assert_eq!(None, board.jumpable_indices(BrdIdx::from(0, 0)));
-        assert_eq!(None, board.jumpable_indices(BrdIdx::from(1, 1)));
-    }
-
-    #[wasm_bindgen_test]
-    fn jumpable_indices() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![24, 28]), board.jumpable_indices(BrdIdx::from(1, 2)));
-    }
-
-    #[wasm_bindgen_test]
-    fn jumpable_indices_central() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![10, 14, 42, 46]), board.jumpable_indices(BrdIdx::from(3, 4)));
-    }
-
-    #[wasm_bindgen_test]
-    fn jumpable_indices_top_row() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![19]), board.jumpable_indices(BrdIdx::from(0, 1)));
-    }
-
-    #[wasm_bindgen_test]
-    fn jumpable_indices_left_column() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![26]), board.jumpable_indices(BrdIdx::from(1, 0)));
-    }
-
-    #[wasm_bindgen_test]
-    fn jumpable_indices_bottom_row() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![40, 44]), board.jumpable_indices(BrdIdx::from(7, 2)));
-    }
-
-    #[wasm_bindgen_test]
-    fn jumpable_indices_right_column() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![5, 37]), board.jumpable_indices(BrdIdx::from(2, 7)));
-    }
-
-    #[wasm_bindgen_test]
-    fn jumpable_indices_top_right() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![21]), board.jumpable_indices(BrdIdx::from(0, 7)));
-    }
-
-    #[wasm_bindgen_test]
-    fn jumpable_indices_bottom_left() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![42]), board.jumpable_indices(BrdIdx::from(7, 0)));
-    }
-
-    // #[wasm_bindgen_test]
-    // fn init_game() {
-    //     let board = Board::init_game(Board::new(8, 8));
-    //     log!("{}", board);
-    // }
-
-    #[wasm_bindgen_test]
-    fn black_diagonal_indices() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![1, 3]), board.player_diagonal_indices(BrdIdx::from(1, 2), Team::Black));
-    }
-
-    #[wasm_bindgen_test]
-    fn white_diagonal_indices() {
-        let board = Board::new(8, 8);
-        assert_eq!(Some(vec![17, 19]), board.player_diagonal_indices(BrdIdx::from(1, 2), Team::White));
     }
 }

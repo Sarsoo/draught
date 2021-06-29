@@ -11,6 +11,15 @@ pub enum Team {
     White = 1,
 }
 
+impl Team {
+    pub fn opponent(&self) -> Team{
+        match self {
+            Team::White => Team::Black,
+            Team::Black => Team::White,
+        }
+    }
+}
+
 impl Display for Team {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
@@ -58,4 +67,6 @@ pub enum Moveable {
     Unplayable = 4,
     WrongTeamSrc = 5,
     IllegalTrajectory = 6,
+    NoJumpablePiece = 7,
+    JumpingSameTeam = 8,
 }
