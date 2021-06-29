@@ -4,6 +4,9 @@
 
 pub mod enums;
 use enums::*;
+use enums::Team::*;
+use enums::Strength::*;
+use enums::SquareState::*;
 
 pub mod iter;
 use iter::*;
@@ -19,7 +22,7 @@ pub const STD_WIDTH: usize = 8;
 /// Standard height of a checkers board is 8 squares
 pub const STD_HEIGHT: usize = 8;
 
-/// Model a game piece by its team and strength (normal or kinged)
+/// Game piece given by its team and strength (normal or kinged)
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Piece {
@@ -27,7 +30,9 @@ pub struct Piece {
     strength: Strength
 }
 
+#[wasm_bindgen]
 impl Piece {
+    #[wasm_bindgen(constructor)]
     pub fn new(team: Team, strength: Strength) -> Piece {
         Piece {
             team, strength
@@ -35,7 +40,7 @@ impl Piece {
     }
 }
 
-/// Model the standard diagonal movements by north west/east etc
+/// Standard diagonal movements given by north west/east etc
 /// 
 /// Used as an absolute measure, i.e. not relative to the team making a move
 /// 
@@ -64,7 +69,7 @@ impl<T: Clone + Copy> Direction<T> {
     }
 }
 
-/// Model board squares by a state and a possible occupying game piece
+/// Board squares given by a state and a possible occupying game piece
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Square {
@@ -74,16 +79,32 @@ pub struct Square {
     state: SquareState
 }
 
+#[wasm_bindgen]
 impl Square {
+    #[wasm_bindgen(constructor)]
     pub fn new(state: SquareState, occupant: Option<Piece>) -> Square{
         Square {
             occupant,
             state
         }
     }
+
+    pub fn pc(team: Team, strength: Strength) -> Square {
+        Square {
+            occupant: Some(Piece::new(team, strength)),
+            state: Occupied,
+        }
+    }
+
+    pub fn empty() -> Square {
+        Square {
+            occupant: None,
+            state: Empty,
+        }
+    }
 }
 
-/// Model a rank 2 tensor index to identify a board square by row and column
+/// Rank 2 tensor index to identify a board square by row and column
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct BrdIdx {
@@ -110,9 +131,9 @@ impl Display for BrdIdx {
 //   BOARD
 ///////////////
 
-/// Models a single state for a checkers board
+/// Single state of a checkers board
 #[wasm_bindgen]
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Board {
     /// 1D backing array of board squares for the 2D game board
     cells: Vec<Square>,
@@ -121,6 +142,10 @@ pub struct Board {
 
     current_turn: Team
 }
+
+///////////////////
+//  PRIV FUNCS
+///////////////////
 
 impl Board {
     /// Get a mutable reference to a board square by 1D array index
@@ -136,7 +161,7 @@ impl Board {
     /// Some(Vec<usize>): A variable length vector of 1D indices for diagonally adjacent squares. 
     /// Vector may be between 1 and 4 items long depending on the location of the given square
     pub fn diagonal_indices(&self, idx: BrdIdx) -> Option<Vec<usize>> {
-        if self.cell_state(self.cell_idx(idx)) == SquareState::Unplayable {
+        if self.cell_state(self.cell_idx(idx)) == Unplayable {
             return None;
         }
 
@@ -186,7 +211,7 @@ impl Board {
     /// 
     /// Some(Direction<Square>): A [`Direction`] structure for the diagonally adjacent squares.
     pub fn adjacent_dir(&self, idx: BrdIdx) -> Option<Direction<Square>> {
-        if self.cell_state(self.cell_idx(idx)) == SquareState::Unplayable {
+        if self.cell_state(self.cell_idx(idx)) == Unplayable {
             return None;
         }
 
@@ -222,8 +247,8 @@ impl Board {
     pub fn filter_indices(&self, idx: BrdIdx, player: Team, indices: Vec<usize>) -> Vec<usize> {
         indices.into_iter().filter(|i| {
             match player {
-                Team::Black => self.board_index(*i).row < idx.row,
-                Team::White => self.board_index(*i).row > idx.row,
+                Black => self.board_index(*i).row < idx.row,
+                White => self.board_index(*i).row > idx.row,
             }
         }).collect()
     }
@@ -243,7 +268,7 @@ impl Board {
     /// Some(Vec<usize>): A variable length vector of 1D indices for diagonally jumpable squares. 
     /// Vector may be between 1 and 4 items long depending on the location of the given square
     pub fn jumpable_indices(&self, idx: BrdIdx) -> Option<Vec<usize>> {
-        if self.cell_state(self.cell_idx(idx)) == SquareState::Unplayable {
+        if self.cell_state(self.cell_idx(idx)) == Unplayable {
             return None;
         }
 
@@ -293,7 +318,7 @@ impl Board {
     /// 
     /// Some(Direction<Square>): A [`Direction`] structure for the diagonally jumpable squares.
     pub fn jumpable_dir(&self, idx: BrdIdx) -> Option<Direction<Square>> {
-        if self.cell_state(self.cell_idx(idx)) == SquareState::Unplayable {
+        if self.cell_state(self.cell_idx(idx)) == Unplayable {
             return None;
         }
 
@@ -331,13 +356,32 @@ impl Board {
             None => None
         }
     }
+
+    /// cast the signed
+    pub fn idx_diffs(from: BrdIdx, to: BrdIdx) -> (isize, isize) {
+        // cast to signed ints so that -1 will work for black moves
+        (to.row as isize - from.row as isize, to.col as isize - from.col as isize)
+    }
 }
+
+///////////////////
+//  BOUND FUNCS
+///////////////////
 
 #[wasm_bindgen]
 impl Board {
     /// Get a copy of a board square by 1D array index
     pub fn cell(&self, idx: usize) -> Square {
         self.cells[idx]
+    }
+
+    /// Get a copy of a board square by 1D array index
+    pub fn set_cell(&mut self, idx: usize, square: Square) {
+        // TODO: handle this error better?
+        if idx >= self.num_cells() {
+            panic!("Given index is too large, idx: {}, square: {:?}", idx, square);
+        }
+        self.cells[idx] = square;
     }
 
     /// Get a copy of a board square by 2D [`BrdIdx`] index
@@ -362,6 +406,7 @@ impl Board {
         BrdIdx::from(row, col)
     }
 
+    /// Check whether a move given by source and destination indices is legal 
     pub fn can_move(&self, from: BrdIdx, to: BrdIdx) -> Moveable {
 
         if from.row > self.height - 1 || from.col > self.width - 1 {
@@ -376,9 +421,9 @@ impl Board {
 
         // check source square is occupied
         match from_square.state {
-            SquareState::Empty => return Moveable::UnoccupiedSrc,
-            SquareState::Unplayable => return Moveable::Unplayable,
-            SquareState::Occupied => {
+            Empty => return Moveable::UnoccupiedSrc,
+            Unplayable => return Moveable::Unplayable,
+            Occupied => {
 
                 // if its not the current teams piece then error
                 match from_square.occupant {
@@ -391,29 +436,50 @@ impl Board {
                             return Moveable::WrongTeamSrc;
                         }
 
-                        // cast to signed ints so that -1 will work for black moves
-                        let row_diff: i32 = to.row as i32 - from.row as i32;
-                        let col_diff: i32 = to.col as i32 - from.col as i32;
-
                         // depending on whether the piece is a king or not, the piece can make different moves
+                        // below validate_*_move() functions just check whether the trajectory is valid i.e a single ajacacent diagonal move for moves and 2 squares for a jump
+                        // this includes validating the jumpee when jumping
+                        // 
+                        // we use the Allowed type to indicate that the trajectory check passed
+                        // but we catch it instead of returning to allow further checks on 
+                        // the destination square
                         // TODO: refactor to a IsMove()/IsJump() to check whether the move has a legal trajectory
                         match from_square_occupant.strength {
-                            Strength::Man => self.validate_man_move(from, to, row_diff, col_diff, from_square_occupant),
-                            Strength::King => self.validate_king_move(from, to, row_diff, col_diff, from_square_occupant),
+                            Man => {
+                                let strength_check = self.validate_man_move(from, to, from_square_occupant);
+                                if strength_check != Moveable::Allowed {
+                                    return strength_check;
+                                }
+                            },
+                            King => {
+                                let strength_check = self.validate_king_move(from, to, from_square_occupant);
+                                if strength_check != Moveable::Allowed {
+                                    return strength_check;
+                                }
+                            },
                         };
+
+                        let to_square = self.cell(self.cell_idx(to));
+                        match to_square.state {
+                            Empty => {
+                                return Moveable::Allowed;
+                            },
+                            Unplayable => return Moveable::Unplayable,
+                            Occupied => return Moveable::OccupiedDest,
+                        }
                     }
                 }
             },
         }
-
-        Moveable::Allowed
     }
 
-    pub fn validate_man_move(&self, from: BrdIdx, to: BrdIdx, row_diff: i32, col_diff: i32, from_square_occupant: Piece) -> Moveable {
+    pub fn validate_man_move(&self, from: BrdIdx, to: BrdIdx, from_square_occupant: Piece) -> Moveable {
+        let (row_diff, col_diff) = Board::idx_diffs(from, to);
+
         // men can only move forwards, below is row difference for each team
-        let idx_scale: i32 = match self.current_turn {
-            Team::Black => -1,
-            Team::White => 1,
+        let idx_scale: isize = match self.current_turn {
+            Black => -1,
+            White => 1,
         };
 
         // legal standard move 
@@ -433,14 +499,14 @@ impl Board {
             if col_diff.abs() == 2 {
 
                 // piece to be jumped over
-                let jumpee = self.get_jumpee(from, row_diff, col_diff);
+                let jumpee = self.cell(self.jumpee_idx(from, to));
                 match jumpee.state {
-                    SquareState::Empty => Moveable::NoJumpablePiece,
-                    SquareState::Unplayable => panic!("Found an unplayable piece to try to jump over, from: {}, to: {}, jumpee: {:?}", from, to, jumpee),
-                    SquareState::Occupied => {
+                    Empty => Moveable::NoJumpablePiece,
+                    Unplayable => panic!("Found an unplayable piece to try to jump over, from: {}, to: {}, jumpee: {:?}", from, to, jumpee),
+                    Occupied => {
 
                         // check whether jumpee is an opponent's piece
-                        return Board::validate_jumpee(jumpee, from, to, from_square_occupant);
+                        return Board::validate_jumpee(jumpee, from_square_occupant);
                     },
                 }
             } 
@@ -455,7 +521,9 @@ impl Board {
         }
     }
 
-    pub fn validate_king_move(&self, from: BrdIdx, to: BrdIdx, row_diff: i32, col_diff: i32, from_square_occupant: Piece) -> Moveable {
+    pub fn validate_king_move(&self, from: BrdIdx, to: BrdIdx, from_square_occupant: Piece) -> Moveable {
+        let (row_diff, col_diff) = Board::idx_diffs(from, to);
+
         // legal standard move 
         if row_diff.abs() == 1 {
             // destination is directly to the left or right
@@ -473,14 +541,14 @@ impl Board {
             if col_diff.abs() == 2 {
 
                 // piece to be jumped over
-                let jumpee = self.get_jumpee(from, row_diff, col_diff);
+                let jumpee = self.cell(self.jumpee_idx(from, to));
                 match jumpee.state {
-                    SquareState::Empty => Moveable::NoJumpablePiece,
-                    SquareState::Unplayable => panic!("Found an unplayable piece to try to jump over, from: {}, to: {}, jumpee: {:?}", from, to, jumpee),
-                    SquareState::Occupied => {
+                    Empty => Moveable::NoJumpablePiece,
+                    Unplayable => panic!("Found an unplayable piece to try to jump over, from: {}, to: {}, jumpee: {:?}", from, to, jumpee),
+                    Occupied => {
 
                         // check whether jumpee is an opponent's piece
-                        return Board::validate_jumpee(jumpee, from, to, from_square_occupant);
+                        return Board::validate_jumpee(jumpee, from_square_occupant);
                     },
                 }
             } 
@@ -495,20 +563,20 @@ impl Board {
         }
     }
 
-    pub fn get_jumpee(&self, from: BrdIdx, row_diff: i32, col_diff: i32) -> Square {
-        self.cell(
-            self.cell_idx(
-                BrdIdx::from(
-                    ((from.row as i32) + row_diff / 2) as usize, 
-                    ((from.col as i32) + col_diff / 2) as usize)
-                )
+    pub fn jumpee_idx(&self, from: BrdIdx, to: BrdIdx) -> usize {
+        let (row_diff, col_diff) = Board::idx_diffs(from, to);
+        self.cell_idx(
+            BrdIdx::from(
+                ((from.row as isize) + row_diff / 2) as usize, 
+                ((from.col as isize) + col_diff / 2) as usize)
             )
     }
 
-    pub fn validate_jumpee(jumpee: Square, from: BrdIdx, to: BrdIdx, from_occ: Piece) -> Moveable {
+    /// Unwrap the jumpee piece from the square and [`Board::check_jumpee_team`] with [`Moveable`] response
+    pub fn validate_jumpee(jumpee: Square, from_occ: Piece) -> Moveable {
         // check whether jumpee is an opponent's piece
         match jumpee.occupant {
-            None => panic!("No occupant found when checking the jumpee, from: {}, to: {}, jumpee: {:?}", from, to, jumpee),
+            None => panic!("No occupant found when checking the from: {:?} , jumpee: {:?}", from_occ, jumpee),
             Some(jumpee_occupant_uw) => {
                 if Board::check_jumpee_team(from_occ, jumpee_occupant_uw) {
                     return Moveable::Allowed;
@@ -520,13 +588,14 @@ impl Board {
         }
     }
 
-
+    /// Check that the source piece and the jumpee are of opposing teams
     pub fn check_jumpee_team(from: Piece, jumpee: Piece) -> bool {
         return from.team.opponent() == jumpee.team
     }
 
-    /// Iniitalise a game board without game pieces
-    pub fn new(width: usize, height: usize) -> Board {
+    /// Initialise a game board without game pieces
+    #[wasm_bindgen(constructor)]
+    pub fn new(width: usize, height: usize, current_turn: Team) -> Board {
         let total_cells = width * height;
 
         let mut cells: Vec<Square>  = Vec::with_capacity(total_cells);
@@ -535,10 +604,10 @@ impl Board {
         for i in 0..height {
             for _ in 0..width {
                 if playable {
-                    cells.push(Square::new(SquareState::Empty, None));
+                    cells.push(Square::new(Empty, None));
                 }
                 else {
-                    cells.push(Square::new(SquareState::Unplayable, None));
+                    cells.push(Square::new(Unplayable, None));
                 }
                 playable = !playable;
             }
@@ -550,33 +619,27 @@ impl Board {
             width,
             height,
 
-            current_turn: Team::Black
+            current_turn
         }
     }
 
     /// Reset the given board to a starting layout with 3 rows of opposing pieces
-    pub fn init_game(board: Board) -> Board {
+    pub fn init_game(board: Board, piece_rows: usize) -> Board {
         let mut new_board = board.clone();
         for (idx, row) in RowSquareIterator::new(&board).enumerate() {
             for (jdx, square) in row.iter().enumerate() {
 
-                if square.state == SquareState::Empty || square.state == SquareState::Occupied {
-                    if idx < 3 {
+                if square.state == Empty || square.state == Occupied {
+                    if idx < piece_rows {
                         let cell_idx = new_board.cell_index(idx, jdx);
-                        new_board.cells[cell_idx] = Square::new(
-                            SquareState::Occupied, 
-                            Some(Piece::new(Team::White, Strength::Man))
-                        );
-                    } else if idx >= board.height - 3 {
+                        new_board.cells[cell_idx] = Square::pc(White, Man);
+                    } else if idx >= board.height - piece_rows {
                         let cell_idx = new_board.cell_index(idx, jdx);
-                        new_board.cells[cell_idx] = Square::new(
-                            SquareState::Occupied, 
-                            Some(Piece::new(Team::Black, Strength::Man))
-                        );
+                        new_board.cells[cell_idx] = Square::pc(Black, Man);
                     } else {
                         let cell_idx = new_board.cell_index(idx, jdx);
                         new_board.cells[cell_idx] = Square::new(
-                            SquareState::Empty, 
+                            Empty, 
                             None
                         );
                     }
@@ -592,6 +655,10 @@ impl Board {
         self.current_turn
     }
 
+    pub fn set_turn(&mut self, new_team: Team) {
+        self.current_turn = new_team;
+    }
+
     /// Get a pointer to the backing array of board squares, [`Board::cells`]
     pub fn cells(&self) -> *const Square {
         self.cells.as_ptr()
@@ -600,6 +667,49 @@ impl Board {
     /// Get the number of board squares
     pub fn num_cells(&self) -> usize {
         self.cells.len()
+    }
+
+    /// Get the number of remaining pieces
+    pub fn num_pieces(&self) -> usize {
+        let pieces: Vec<_> = PieceIterator::new(self).collect();
+        pieces.len()
+    }
+
+    /// Get the number of remaining pieces for a player
+    pub fn num_player(&self, team: Team) -> usize {
+        let mut total = 0;
+        for (_, square) in PieceIterator::new(self) {
+            match square.occupant {
+                None => {},
+                Some(x) => {
+                    if x.team == team {
+                        total += 1;
+                    }
+                },
+            }
+        }
+        total
+    }
+
+    /// Get the score value, Black - White pieces
+    pub fn score(&self) -> isize {
+        let mut black: isize = 0;
+        let mut white: isize = 0;
+
+        for (_, square) in PieceIterator::new(self) {
+            if let Some(x) = square.occupant {
+                match x.team {
+                    Black => {
+                        black += 1;
+                    },
+                    White => {
+                        white += 1;
+                    },
+                }
+            }
+        }
+
+        black - white
     }
 
     /// Get the state of a board square by 1D array index
@@ -617,9 +727,9 @@ impl Display for Board {
                 let idx = self.cell_index(i, j);
 
                 match self.cell_state(idx) {
-                    SquareState::Empty => { write!(string, "{}", SquareState::Empty); },
-                    SquareState::Occupied => { write!(string, "{}", self.cell(idx).occupant.unwrap().team); },
-                    SquareState::Unplayable => { write!(string, "{}", SquareState::Unplayable); },
+                    Empty => { write!(string, "_ "); },
+                    Occupied => { write!(string, "{} ", self.cell(idx).occupant.unwrap().team); },
+                    Unplayable => { write!(string, ". "); },
                 }
             }
             string.push('\n');

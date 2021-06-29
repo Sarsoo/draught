@@ -5,6 +5,7 @@
 pub mod board;
 pub mod utils;
 pub mod game;
+pub mod player;
 
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
