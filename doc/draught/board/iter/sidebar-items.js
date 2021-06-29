@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["RowIndexIterator",""],["RowSquareIterator",""]]});
+initSidebarItems({"struct":[["PieceIterator",""],["RowIndexIterator",""],["RowSquareIterator",""]]});
