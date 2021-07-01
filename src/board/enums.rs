@@ -6,6 +6,14 @@ use std::fmt::{Display, Write};
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum MoveType {
+    Move = 0,
+    Jump = 1,
+}
+
+#[wasm_bindgen]
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Team {
     Black = 0,
     White = 1,

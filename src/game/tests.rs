@@ -11,7 +11,7 @@ use crate::board::enums::Strength::*;
 #[wasm_bindgen_test]
 fn make_move() {
     let mut game = Game::new(8, 8, 3, Black);
-    log!("{}", game);
+    // log!("{}", game);
     // log!("{:?}", game);
 
     let from = BrdIdx::from(5, 2);
@@ -22,7 +22,7 @@ fn make_move() {
 
     assert_eq!(board.cell(board.cell_index(4, 1)), Square::pc(Black, Man));
 
-    log!("{}", game);
+    // log!("{}", game);
 
     let from = BrdIdx::from(2, 1);
     let to = BrdIdx::from(3, 2);
@@ -32,7 +32,7 @@ fn make_move() {
     
     assert_eq!(board.cell(board.cell_index(3, 2)), Square::pc(White, Man));
 
-    log!("{}", game);
+    // log!("{}", game);
     // log!("{}", game.previous_board(0));
 }
 

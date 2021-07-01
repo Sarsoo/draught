@@ -22,7 +22,7 @@ jobs:
         run: wasm-pack test --firefox --chrome --headless
 
       - name: Build Rust for WASM
-        run: wasm-pack build
+        run: wasm-pack build --release
 
       - name: Install Node
         uses: actions/setup-node@v2

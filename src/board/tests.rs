@@ -43,7 +43,7 @@ fn set_cell() {
     let idx = 1;
 
     let mut board = Board::new(8, 8, Black);
-    let square = Square::new(Occupied, Some(Piece::new(White, Man)));
+    let square = Square::pc(White, Man);
 
     board.set_cell(idx, square);
     assert_eq!(square, board.cell(idx));
@@ -106,51 +106,51 @@ fn first_square_row_5_unplayable() {
 #[wasm_bindgen_test]
 fn moveable_indices_unplayable() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(None, board.diagonal_indices(BrdIdx::from(7, 7)));
-    assert_eq!(None, board.diagonal_indices(BrdIdx::from(0, 0)));
-    assert_eq!(None, board.diagonal_indices(BrdIdx::from(1, 1)));
+    assert_eq!(None, board.adjacent_indices(BrdIdx::from(7, 7)));
+    assert_eq!(None, board.adjacent_indices(BrdIdx::from(0, 0)));
+    assert_eq!(None, board.adjacent_indices(BrdIdx::from(1, 1)));
 }
 
 #[wasm_bindgen_test]
 fn moveable_indices_central() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(Some(vec![1, 3, 17, 19]), board.diagonal_indices(BrdIdx::from(1, 2)));
+    assert_eq!(Some(vec![1, 3, 17, 19]), board.adjacent_indices(BrdIdx::from(1, 2)));
 }
 
 #[wasm_bindgen_test]
 fn moveable_indices_top_row() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(Some(vec![8, 10]), board.diagonal_indices(BrdIdx::from(0, 1)));
+    assert_eq!(Some(vec![8, 10]), board.adjacent_indices(BrdIdx::from(0, 1)));
 }
 
 #[wasm_bindgen_test]
 fn moveable_indices_left_column() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(Some(vec![1, 17]), board.diagonal_indices(BrdIdx::from(1, 0)));
+    assert_eq!(Some(vec![1, 17]), board.adjacent_indices(BrdIdx::from(1, 0)));
 }
 
 #[wasm_bindgen_test]
 fn moveable_indices_bottom_row() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(Some(vec![49, 51]), board.diagonal_indices(BrdIdx::from(7, 2)));
+    assert_eq!(Some(vec![49, 51]), board.adjacent_indices(BrdIdx::from(7, 2)));
 }
 
 #[wasm_bindgen_test]
 fn moveable_indices_right_column() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(Some(vec![14, 30]), board.diagonal_indices(BrdIdx::from(2, 7)));
+    assert_eq!(Some(vec![14, 30]), board.adjacent_indices(BrdIdx::from(2, 7)));
 }
 
 #[wasm_bindgen_test]
 fn moveable_indices_top_right() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(Some(vec![14]), board.diagonal_indices(BrdIdx::from(0, 7)));
+    assert_eq!(Some(vec![14]), board.adjacent_indices(BrdIdx::from(0, 7)));
 }
 
 #[wasm_bindgen_test]
 fn moveable_indices_bottom_left() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(Some(vec![49]), board.diagonal_indices(BrdIdx::from(7, 0)));
+    assert_eq!(Some(vec![49]), board.adjacent_indices(BrdIdx::from(7, 0)));
 }
 
 //////////////////////
@@ -214,15 +214,15 @@ fn jumpable_indices_bottom_left() {
 }
 
 #[wasm_bindgen_test]
-fn black_diagonal_indices() {
+fn black_adjacent_indices() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(Some(vec![1, 3]), board.player_diagonal_indices(BrdIdx::from(1, 2), Black));
+    assert_eq!(Some(vec![1, 3]), board.player_adjacent_indices(BrdIdx::from(1, 2), Black));
 }
 
 #[wasm_bindgen_test]
-fn white_diagonal_indices() {
+fn white_adjacent_indices() {
     let board = Board::new(8, 8, Black);
-    assert_eq!(Some(vec![17, 19]), board.player_diagonal_indices(BrdIdx::from(1, 2), White));
+    assert_eq!(Some(vec![17, 19]), board.player_adjacent_indices(BrdIdx::from(1, 2), White));
 }
 
 ////////////////
@@ -253,22 +253,12 @@ fn check_jumpee_same_teams() {
 
 #[wasm_bindgen_test]
 fn check_validate_jumpee_opposing_teams() {
-    let jumpee_square = Square::new(
-        Occupied, 
-        Some(
-            Piece::new(White, Man)
-        )
-    );
+    let jumpee_square = Square::pc(White, Man);
     let from_piece = Piece::new(Black, Man);
 
     assert_eq!(Board::validate_jumpee(jumpee_square, from_piece), Moveable::Allowed);
 
-    let jumpee_square = Square::new(
-        Occupied, 
-        Some(
-            Piece::new(Black, Man)
-        )
-    );
+    let jumpee_square = Square::pc(Black, Man);
     let from_piece = Piece::new(White, Man);
 
     assert_eq!(Board::validate_jumpee(jumpee_square, from_piece), Moveable::Allowed);
@@ -445,7 +435,7 @@ fn can_move() {
     let to = BrdIdx::from(0, 0);
     assert_eq!(board.can_move(from, to), Moveable::Unplayable);
 
-    board.set_turn(Black);
+    board.current_turn = Black;
 
     // wrong teams piece
     let from = BrdIdx::from(2, 1);

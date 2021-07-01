@@ -1,5 +1,4 @@
 use crate::board::Board;
-use indextree::Arena;
 
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
@@ -22,7 +21,6 @@ use std::fmt::{Display, Write};
 pub struct Game {
     current: Board,
     previous_boards: Vec<Board>,
-    // tree: Arena<Board>
 }
 
 impl Game {
@@ -39,6 +37,11 @@ impl Game {
 
 #[wasm_bindgen]
 impl Game {
+    /// Current turn's team
+    pub fn current_turn(&self) -> Team {
+        self.current.current_turn
+    }
+
     /// Attempt to make a move given a source and destination index
     pub fn make_move(&mut self, from: BrdIdx, to: BrdIdx) {
         let able = self.current.can_move(from, to);
@@ -58,59 +61,19 @@ impl Game {
         }
 
         // board has been changed, update player turn
-        self.current.set_turn(self.current.current_turn().opponent());
+        self.current.current_turn = self.current.current_turn.opponent();
     }
 
     /// Update board state with given move and push new board into current state
     pub fn execute_move(&mut self, from: BrdIdx, to: BrdIdx) {
-        let mut new_board = self.current.clone();
-
-        let from_idx = self.current.cell_idx(from);
-        let to_idx = self.current.cell_idx(to);
-
-        // make move update
-        new_board.set_cell(
-            to_idx, // destination square
-            self.current.cell(from_idx) // source piece
-        );
-
-        // remove old piece
-        new_board.set_cell(
-            from_idx, // destination square
-            Square::empty() // empty piece
-        );
-
         // set new board to current and push current to stack
-        self.push_new_board(new_board);
+        self.push_new_board(self.current.apply_move(from, to));
     }
 
     /// Update board state with given jump move and push new board into current state
     pub fn execute_jump(&mut self, from: BrdIdx, to: BrdIdx) {
-        let mut new_board = self.current.clone();
-
-        let from_idx = self.current.cell_idx(from);
-        let to_idx = self.current.cell_idx(from);
-
-        // make move update
-        new_board.set_cell(
-            to_idx, // destination square
-            self.current.cell(from_idx) // source piece
-        );
-
-        // remove old piece
-        new_board.set_cell(
-            from_idx, // destination square
-            Square::empty() // empty piece
-        );
-
-        // remove jumpee
-        new_board.set_cell(
-            self.current.jumpee_idx(from, to), // destination square
-            Square::empty() // empty piece
-        );
-
         // set new board to current and push current to stack
-        self.push_new_board(new_board);
+        self.push_new_board(self.current.apply_jump(from, to));
     }
 
     /// Push current board into the previous turns and set given board to current
