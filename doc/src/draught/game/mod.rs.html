@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/game/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../draught/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../draught/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
                 <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -106,59 +106,21 @@
 <span id="103">103</span>
 <span id="104">104</span>
 <span id="105">105</span>
-<span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
-<span id="117">117</span>
-<span id="118">118</span>
-<span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
-<span id="122">122</span>
-<span id="123">123</span>
-<span id="124">124</span>
-<span id="125">125</span>
-<span id="126">126</span>
-<span id="127">127</span>
-<span id="128">128</span>
-<span id="129">129</span>
-<span id="130">130</span>
-<span id="131">131</span>
-<span id="132">132</span>
-<span id="133">133</span>
-<span id="134">134</span>
-<span id="135">135</span>
-<span id="136">136</span>
-<span id="137">137</span>
-<span id="138">138</span>
-<span id="139">139</span>
-<span id="140">140</span>
-<span id="141">141</span>
-<span id="142">142</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">board</span>::<span class="ident">Board</span>;
-<span class="kw">use</span> <span class="ident">indextree</span>::<span class="ident">Arena</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::Board</span>;
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">wasm_bindgen</span>;
-<span class="kw">use</span> <span class="ident">wasm_bindgen</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">wasm_bindgen::prelude</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">log</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::log</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">board</span>::{<span class="ident">Square</span>, <span class="ident">BrdIdx</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">board</span>::<span class="ident">enums</span>::{<span class="ident">SquareState</span>, <span class="ident">Moveable</span>, <span class="ident">Team</span>};
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board</span>::{<span class="ident">Square</span>, <span class="ident">BrdIdx</span>};
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::enums</span>::{<span class="ident">SquareState</span>, <span class="ident">Moveable</span>, <span class="ident">Team</span>};
 
 <span class="kw">use</span> <span class="ident">Team</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">SquareState</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::{<span class="ident">Display</span>, <span class="ident">Write</span>};
+<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="ident">Display</span>, <span class="ident">Write</span>};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span> <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">tests</span>;
 
@@ -168,7 +130,6 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Game</span> {
     <span class="ident">current</span>: <span class="ident">Board</span>,
     <span class="ident">previous_boards</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span>,
-    <span class="comment">// tree: Arena&lt;Board&gt;</span>
 }
 
 <span class="kw">impl</span> <span class="ident">Game</span> {
@@ -185,12 +146,17 @@
 
 <span class="attribute">#[<span class="ident">wasm_bindgen</span>]</span>
 <span class="kw">impl</span> <span class="ident">Game</span> {
+    <span class="doccomment">/// Current turn&#39;s team</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_turn</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Team</span> {
+        <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">current_turn</span>
+    }
+
     <span class="doccomment">/// Attempt to make a move given a source and destination index</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_move</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">from</span>: <span class="ident">BrdIdx</span>, <span class="ident">to</span>: <span class="ident">BrdIdx</span>) {
         <span class="kw">let</span> <span class="ident">able</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">can_move</span>(<span class="ident">from</span>, <span class="ident">to</span>);
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Moveable</span>::<span class="ident">Allowed</span> <span class="op">=</span> <span class="ident">able</span> {
-            <span class="kw">let</span> (<span class="kw">_</span>, <span class="ident">col_diff</span>) <span class="op">=</span> <span class="ident">Board</span>::<span class="ident">idx_diffs</span>(<span class="ident">from</span>, <span class="ident">to</span>);
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Moveable::Allowed</span> <span class="op">=</span> <span class="ident">able</span> {
+            <span class="kw">let</span> (<span class="kw">_</span>, <span class="ident">col_diff</span>) <span class="op">=</span> <span class="ident">Board::idx_diffs</span>(<span class="ident">from</span>, <span class="ident">to</span>);
             <span class="comment">// MOVE</span>
             <span class="kw">if</span> <span class="ident">col_diff</span>.<span class="ident">abs</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
                 <span class="self">self</span>.<span class="ident">execute_move</span>(<span class="ident">from</span>, <span class="ident">to</span>);
@@ -200,63 +166,23 @@
                 <span class="self">self</span>.<span class="ident">execute_jump</span>(<span class="ident">from</span>, <span class="ident">to</span>);
             }
         } <span class="kw">else</span> {
-            <span class="macro">log</span><span class="macro">!</span>(<span class="string">&quot;Unable to make move, {:?}&quot;</span>, <span class="ident">able</span>);
+            <span class="macro">log!</span>(<span class="string">&quot;Unable to make move, {:?}&quot;</span>, <span class="ident">able</span>);
         }
 
         <span class="comment">// board has been changed, update player turn</span>
-        <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">set_turn</span>(<span class="self">self</span>.<span class="ident">current</span>.<span class="ident">current_turn</span>().<span class="ident">opponent</span>());
+        <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">current_turn</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">current_turn</span>.<span class="ident">opponent</span>();
     }
 
     <span class="doccomment">/// Update board state with given move and push new board into current state</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">execute_move</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">from</span>: <span class="ident">BrdIdx</span>, <span class="ident">to</span>: <span class="ident">BrdIdx</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_board</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">clone</span>();
-
-        <span class="kw">let</span> <span class="ident">from_idx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">cell_idx</span>(<span class="ident">from</span>);
-        <span class="kw">let</span> <span class="ident">to_idx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">cell_idx</span>(<span class="ident">to</span>);
-
-        <span class="comment">// make move update</span>
-        <span class="ident">new_board</span>.<span class="ident">set_cell</span>(
-            <span class="ident">to_idx</span>, <span class="comment">// destination square</span>
-            <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">cell</span>(<span class="ident">from_idx</span>) <span class="comment">// source piece</span>
-        );
-
-        <span class="comment">// remove old piece</span>
-        <span class="ident">new_board</span>.<span class="ident">set_cell</span>(
-            <span class="ident">from_idx</span>, <span class="comment">// destination square</span>
-            <span class="ident">Square</span>::<span class="ident">empty</span>() <span class="comment">// empty piece</span>
-        );
-
         <span class="comment">// set new board to current and push current to stack</span>
-        <span class="self">self</span>.<span class="ident">push_new_board</span>(<span class="ident">new_board</span>);
+        <span class="self">self</span>.<span class="ident">push_new_board</span>(<span class="self">self</span>.<span class="ident">current</span>.<span class="ident">apply_move</span>(<span class="ident">from</span>, <span class="ident">to</span>));
     }
 
     <span class="doccomment">/// Update board state with given jump move and push new board into current state</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">execute_jump</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">from</span>: <span class="ident">BrdIdx</span>, <span class="ident">to</span>: <span class="ident">BrdIdx</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_board</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">clone</span>();
-
-        <span class="kw">let</span> <span class="ident">from_idx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">cell_idx</span>(<span class="ident">from</span>);
-        <span class="kw">let</span> <span class="ident">to_idx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">cell_idx</span>(<span class="ident">from</span>);
-
-        <span class="comment">// make move update</span>
-        <span class="ident">new_board</span>.<span class="ident">set_cell</span>(
-            <span class="ident">to_idx</span>, <span class="comment">// destination square</span>
-            <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">cell</span>(<span class="ident">from_idx</span>) <span class="comment">// source piece</span>
-        );
-
-        <span class="comment">// remove old piece</span>
-        <span class="ident">new_board</span>.<span class="ident">set_cell</span>(
-            <span class="ident">from_idx</span>, <span class="comment">// destination square</span>
-            <span class="ident">Square</span>::<span class="ident">empty</span>() <span class="comment">// empty piece</span>
-        );
-
-        <span class="comment">// remove jumpee</span>
-        <span class="ident">new_board</span>.<span class="ident">set_cell</span>(
-            <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">jumpee_idx</span>(<span class="ident">from</span>, <span class="ident">to</span>), <span class="comment">// destination square</span>
-            <span class="ident">Square</span>::<span class="ident">empty</span>() <span class="comment">// empty piece</span>
-        );
-
         <span class="comment">// set new board to current and push current to stack</span>
-        <span class="self">self</span>.<span class="ident">push_new_board</span>(<span class="ident">new_board</span>);
+        <span class="self">self</span>.<span class="ident">push_new_board</span>(<span class="self">self</span>.<span class="ident">current</span>.<span class="ident">apply_jump</span>(<span class="ident">from</span>, <span class="ident">to</span>));
     }
 
     <span class="doccomment">/// Push current board into the previous turns and set given board to current</span>
@@ -273,18 +199,18 @@
     <span class="attribute">#[<span class="ident">wasm_bindgen</span>(<span class="ident">constructor</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">width</span>: <span class="ident">usize</span>, <span class="ident">height</span>: <span class="ident">usize</span>, <span class="ident">piece_rows</span>: <span class="ident">usize</span>, <span class="ident">first_turn</span>: <span class="ident">Team</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Game</span> {
         <span class="ident">Game</span> {
-            <span class="ident">current</span>: <span class="ident">Board</span>::<span class="ident">init_game</span>(
-                <span class="ident">Board</span>::<span class="ident">new</span>(<span class="ident">width</span>, <span class="ident">height</span>, <span class="ident">first_turn</span>), <span class="ident">piece_rows</span>,
+            <span class="ident">current</span>: <span class="ident">Board::init_game</span>(
+                <span class="ident">Board::new</span>(<span class="ident">width</span>, <span class="ident">height</span>, <span class="ident">first_turn</span>), <span class="ident">piece_rows</span>,
             ),
-            <span class="ident">previous_boards</span>: <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">10</span>),
+            <span class="ident">previous_boards</span>: <span class="ident">Vec::with_capacity</span>(<span class="number">10</span>),
         }
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Game</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span>{
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="ident">current</span>)
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::fmt::Result</span>{
+        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="ident">current</span>)
     }
 }</pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="draught" data-search-js="../../../search-index.js"></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="draught" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
     <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>

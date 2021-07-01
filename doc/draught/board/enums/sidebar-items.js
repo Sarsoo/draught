@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Moveable",""],["SquareState",""],["Strength",""],["Team",""]]});
+initSidebarItems({"enum":[["MoveType",""],["Moveable",""],["SquareState",""],["Strength",""],["Team",""]]});
