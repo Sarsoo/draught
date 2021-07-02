@@ -127,6 +127,7 @@ pub struct BrdIdx {
 
 #[wasm_bindgen]
 impl BrdIdx {
+    #[wasm_bindgen(constructor)]
     pub fn from(row: usize, col: usize) -> BrdIdx {
         BrdIdx{
             row, col

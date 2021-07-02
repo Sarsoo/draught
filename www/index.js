@@ -1,7 +1,9 @@
-import { Game, Board, Painter, Team, init_game } from "draught";
+import { Game, Board, BrdIdx, Painter, Team, init_wasm } from "draught";
 import { memory } from "draught/draught_bg.wasm";
 
-init_game();
+///////////////////
+//    CONSTS
+///////////////////
 
 const CANVAS_WIDTH = 480;
 const CANVAS_HEIGHT = 480;
@@ -11,16 +13,85 @@ const BOARD_HEIGHT = 8;
 
 const PIECE_ROWS = 3;
 
+const GameState = {
+    HUMAN_TURN: {
+        THINKING: "human_turn.thinking",
+        FROM_SELECTED: "human_turn.from_selected"
+    },
+    AI_TURN: "ai_turn"
+}
+
+//////////////////
+//  GAME STUFF
+//////////////////
+
+init_wasm();
+
+// let board = new Board(BOARD_WIDTH, BOARD_HEIGHT, Team.Black);
+
+let current_state = GameState.HUMAN_TURN.THINKING;
+let painter = new Painter(CANVAS_WIDTH, CANVAS_HEIGHT, "game-canvas");
+// painter.draw(board);
+
+let from = null;
+let to = null;
+
+let game = new Game(BOARD_WIDTH, BOARD_HEIGHT, PIECE_ROWS, Team.Black);
+game.set_painter(painter);
+game.draw();
+
+/////////////////
+//   CANVAS
+/////////////////
+
 const canvas = document.getElementById("game-canvas");
 canvas.addEventListener("click", (event) => {
     var mousepos = getMousePos(canvas, event);
     // console.log(mousepos);
-    var cell = {
-        x: Math.floor((mousepos.x / CANVAS_WIDTH) * BOARD_WIDTH),
-        y: Math.floor((mousepos.y / CANVAS_HEIGHT) * BOARD_HEIGHT),
-    }
-    console.log(cell);
+    var cell = new BrdIdx(
+        Math.floor((mousepos.y / CANVAS_HEIGHT) * BOARD_HEIGHT),
+        Math.floor((mousepos.x / CANVAS_WIDTH) * BOARD_WIDTH),
+    );
+    // console.log(cell);
+    process_canvas_click(cell);
 })
+
+////////////////
+//   FUNCS
+////////////////
+
+function start_game() {
+    game = new Game(BOARD_WIDTH, BOARD_HEIGHT, PIECE_ROWS, Team.Black);
+    game.set_painter(painter);
+    game.draw();
+
+    current_state = GameState.HUMAN_TURN.THINKING;
+}
+
+function process_canvas_click(cell_coord) {
+    switch(current_state) {
+        case GameState.HUMAN_TURN.THINKING:
+            console.log("Your turn, first piece picked");
+
+            from = cell_coord;
+            current_state = GameState.HUMAN_TURN.FROM_SELECTED; 
+            
+            break;
+        case GameState.HUMAN_TURN.FROM_SELECTED:
+            console.log("Your turn, first piece already picked, picking second");
+
+            to = cell_coord;
+            game.make_move(from, to);
+            game.draw();
+
+            current_state = GameState.HUMAN_TURN.THINKING;
+            
+            break;
+        case GameState.AI_TURN:
+            console.log("It's the AI's turn!");
+            break;
+    }
+}
 
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
@@ -30,11 +101,3 @@ function getMousePos(canvas, evt) {
     };
 }
 
-let painter = new Painter(CANVAS_WIDTH, CANVAS_HEIGHT, "game-canvas");
-
-// let board = new Board(BOARD_WIDTH, BOARD_HEIGHT, Team.Black);
-// painter.draw(board);
-
-let game = new Game(BOARD_WIDTH, BOARD_HEIGHT, PIECE_ROWS, Team.Black, "game-canvas", CANVAS_WIDTH, CANVAS_HEIGHT);
-game.set_painter(painter);
-game.draw();

@@ -14,6 +14,7 @@ use crate::board::{Board};
 use crate::board::iter::PieceIterator;
 
 use crate::board::enums::Team::*;
+use crate::board::enums::Strength::*;
 
 /// Default hex colour value for white square background
 const WHITE_SQUARE: &str = "#FFFFFF";
@@ -36,6 +37,8 @@ const BLACK_PIECE: &str = "#ed0000";
 const WHITE_PIECE_OUTLINE: &str = "#9c9c9c";
 /// Default hex colour value for black piece outline
 const BLACK_PIECE_OUTLINE: &str = "#a60000";
+/// Default hex colour value for black piece outline
+const KING_OUTLINE: &str = "#ffea00";
 /// Whether to outline pieces
 const DRAW_PIECE_OUTLINES: bool = true;
 /// Line width for outlining pieces
@@ -59,6 +62,7 @@ pub struct Painter {
 
     white_piece_line: JsValue,
     black_piece_line: JsValue,
+    king_line: JsValue,
 
     piece_lines: bool,
     piece_line_width: f64,
@@ -147,6 +151,7 @@ impl Painter {
 
             white_piece_line: JsValue::from_str(WHITE_PIECE_OUTLINE),
             black_piece_line: JsValue::from_str(BLACK_PIECE_OUTLINE),
+            king_line: JsValue::from_str(KING_OUTLINE),
             piece_lines: DRAW_PIECE_OUTLINES,
             piece_line_width: PIECE_OUTLINE_WIDTH,
 
@@ -176,6 +181,7 @@ impl Painter {
 
             white_piece_line: JsValue::from_str(WHITE_PIECE_OUTLINE),
             black_piece_line: JsValue::from_str(BLACK_PIECE_OUTLINE),
+            king_line: JsValue::from_str(KING_OUTLINE),
             piece_lines: DRAW_PIECE_OUTLINES,
             piece_line_width: PIECE_OUTLINE_WIDTH,
 
@@ -299,6 +305,10 @@ impl Painter {
                             self.context.set_fill_style(&self.white_piece);
                             self.context.set_stroke_style(&self.white_piece_line);
                         },
+                    }
+
+                    if piece.strength == King {
+                        self.context.set_stroke_style(&self.king_line);
                     }
 
                     let center_x: f64 = (brd_idx.col as f64 * cell_width as f64) + (cell_width as f64) / 2.0;

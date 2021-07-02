@@ -32,7 +32,7 @@ macro_rules! log {
 }
 
 #[wasm_bindgen]
-pub fn init_game() {
+pub fn init_wasm() {
     log!("Initialising WebAssembly");
     utils::set_panic_hook();
 }
