@@ -17,6 +17,8 @@ jobs:
 
       - name: Install wasm-pack
         uses: jetli/wasm-pack-action@v0.3.0
+        with:
+          version: 'latest'
 
       - name: Test WASM in-browser
         run: wasm-pack test --firefox --chrome --headless
