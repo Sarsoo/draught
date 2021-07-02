@@ -331,6 +331,16 @@
 <span id="328">328</span>
 <span id="329">329</span>
 <span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Components for painting board states onto HTML canvases</span>
  
@@ -348,6 +358,7 @@
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::iter::PieceIterator</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::enums::Team</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::enums::Strength</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Default hex colour value for white square background</span>
 <span class="kw">const</span> <span class="ident">WHITE_SQUARE</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;#FFFFFF&quot;</span>;
@@ -370,6 +381,8 @@
 <span class="kw">const</span> <span class="ident">WHITE_PIECE_OUTLINE</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;#9c9c9c&quot;</span>;
 <span class="doccomment">/// Default hex colour value for black piece outline</span>
 <span class="kw">const</span> <span class="ident">BLACK_PIECE_OUTLINE</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;#a60000&quot;</span>;
+<span class="doccomment">/// Default hex colour value for black piece outline</span>
+<span class="kw">const</span> <span class="ident">KING_OUTLINE</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;#ffea00&quot;</span>;
 <span class="doccomment">/// Whether to outline pieces</span>
 <span class="kw">const</span> <span class="ident">DRAW_PIECE_OUTLINES</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
 <span class="doccomment">/// Line width for outlining pieces</span>
@@ -393,6 +406,7 @@
 
     <span class="ident">white_piece_line</span>: <span class="ident">JsValue</span>,
     <span class="ident">black_piece_line</span>: <span class="ident">JsValue</span>,
+    <span class="ident">king_line</span>: <span class="ident">JsValue</span>,
 
     <span class="ident">piece_lines</span>: <span class="ident">bool</span>,
     <span class="ident">piece_line_width</span>: <span class="ident">f64</span>,
@@ -481,6 +495,7 @@
 
             <span class="ident">white_piece_line</span>: <span class="ident">JsValue::from_str</span>(<span class="ident">WHITE_PIECE_OUTLINE</span>),
             <span class="ident">black_piece_line</span>: <span class="ident">JsValue::from_str</span>(<span class="ident">BLACK_PIECE_OUTLINE</span>),
+            <span class="ident">king_line</span>: <span class="ident">JsValue::from_str</span>(<span class="ident">KING_OUTLINE</span>),
             <span class="ident">piece_lines</span>: <span class="ident">DRAW_PIECE_OUTLINES</span>,
             <span class="ident">piece_line_width</span>: <span class="ident">PIECE_OUTLINE_WIDTH</span>,
 
@@ -510,6 +525,7 @@
 
             <span class="ident">white_piece_line</span>: <span class="ident">JsValue::from_str</span>(<span class="ident">WHITE_PIECE_OUTLINE</span>),
             <span class="ident">black_piece_line</span>: <span class="ident">JsValue::from_str</span>(<span class="ident">BLACK_PIECE_OUTLINE</span>),
+            <span class="ident">king_line</span>: <span class="ident">JsValue::from_str</span>(<span class="ident">KING_OUTLINE</span>),
             <span class="ident">piece_lines</span>: <span class="ident">DRAW_PIECE_OUTLINES</span>,
             <span class="ident">piece_line_width</span>: <span class="ident">PIECE_OUTLINE_WIDTH</span>,
 
@@ -633,6 +649,10 @@
                             <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">set_fill_style</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">white_piece</span>);
                             <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">set_stroke_style</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">white_piece_line</span>);
                         },
+                    }
+
+                    <span class="kw">if</span> <span class="ident">piece</span>.<span class="ident">strength</span> <span class="op">=</span><span class="op">=</span> <span class="ident">King</span> {
+                        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">set_stroke_style</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">king_line</span>);
                     }
 
                     <span class="kw">let</span> <span class="ident">center_x</span>: <span class="ident">f64</span> <span class="op">=</span> (<span class="ident">brd_idx</span>.<span class="ident">col</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">*</span> <span class="ident">cell_width</span> <span class="kw">as</span> <span class="ident">f64</span>) <span class="op">+</span> (<span class="ident">cell_width</span> <span class="kw">as</span> <span class="ident">f64</span>) <span class="op">/</span> <span class="number">2.0</span>;

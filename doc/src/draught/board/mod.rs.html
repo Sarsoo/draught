@@ -801,6 +801,7 @@
 <span id="798">798</span>
 <span id="799">799</span>
 <span id="800">800</span>
+<span id="801">801</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Board module for components related to the checkers board and game structure</span>
 
@@ -931,6 +932,7 @@
 
 <span class="attribute">#[<span class="ident">wasm_bindgen</span>]</span>
 <span class="kw">impl</span> <span class="ident">BrdIdx</span> {
+    <span class="attribute">#[<span class="ident">wasm_bindgen</span>(<span class="ident">constructor</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">row</span>: <span class="ident">usize</span>, <span class="ident">col</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">BrdIdx</span> {
         <span class="ident">BrdIdx</span>{
             <span class="ident">row</span>, <span class="ident">col</span>
