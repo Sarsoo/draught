@@ -148,25 +148,39 @@
 <span id="145">145</span>
 <span id="146">146</span>
 <span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! AI player logic</span>
 
-<span class="kw">use</span> <span class="ident">indextree</span>::{<span class="ident">Arena</span>, <span class="ident">NodeId</span>, <span class="ident">Node</span>};
+<span class="kw">use</span> <span class="ident">indextree</span>::{<span class="ident">Arena</span>, <span class="ident">NodeId</span>};
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">wasm_bindgen</span>;
-<span class="kw">use</span> <span class="ident">wasm_bindgen::prelude</span>::<span class="kw-2">*</span>;
+<span class="comment">// use wasm_bindgen::prelude::*;</span>
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::log</span>;
+<span class="comment">// use crate::log;</span>
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board</span>::{<span class="ident">Square</span>, <span class="ident">Board</span>, <span class="ident">BrdIdx</span>};
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::enums</span>::{<span class="ident">SquareState</span>, <span class="ident">MoveType</span>, <span class="ident">Moveable</span>, <span class="ident">Team</span>, <span class="ident">Strength</span>};
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board</span>::{<span class="ident">Board</span>, <span class="ident">BrdIdx</span>};
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::enums</span>::{<span class="ident">MoveType</span>, <span class="ident">Moveable</span>, <span class="ident">Team</span>};
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::iter</span>::{<span class="ident">PieceIterator</span>};
 
-<span class="kw">use</span> <span class="ident">Team</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">Strength</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">SquareState</span>::<span class="kw-2">*</span>;
+<span class="comment">// use Team::*;</span>
+<span class="comment">// use Strength::*;</span>
+<span class="comment">// use SquareState::*;</span>
 
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="ident">Display</span>, <span class="ident">Write</span>};
+<span class="comment">// use std::fmt::{Display, Write};</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span> <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">tests</span>;
 
@@ -267,9 +281,23 @@
         <span class="ident">moves</span>
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gen_tree</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">board</span>: <span class="ident">Board</span>) {
+    <span class="comment">// pub fn gen_tree(&amp;mut self, tree: &amp;mut Arena&lt;Board&gt;, board: Board) {</span>
 
-    }
+        <span class="comment">// let boards = self.get_move_boards(&amp;board);</span>
+
+        <span class="comment">// let root_id = vec!(tree.new_node(board));</span>
+        <span class="comment">// let ids = self.insert_boards(boards);</span>
+
+        <span class="comment">// for d in 0..self.search_depth {</span>
+
+        <span class="comment">//     for root in root_id.iter(){</span>
+        <span class="comment">//         for id in ids.into_iter() {</span>
+        <span class="comment">//             root.append(id, tree);</span>
+        <span class="comment">//         }</span>
+        <span class="comment">//     }</span>
+        <span class="comment">// }</span>
+
+    <span class="comment">// }</span>
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert_boards</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">boards</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
         
