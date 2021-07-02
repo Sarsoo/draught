@@ -1,11 +1,12 @@
 use super::*;
 use wasm_bindgen_test::*;
-use crate::log;
+// use crate::log;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
-use crate::board::{Piece};
+// use crate::board::{Piece};
 use crate::board::enums::Strength::*;
+use crate::board::enums::Team::*;
 
 
 #[wasm_bindgen_test]

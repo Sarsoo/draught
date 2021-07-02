@@ -6,6 +6,7 @@ pub mod board;
 pub mod utils;
 pub mod game;
 pub mod player;
+pub mod paint;
 pub mod comp;
 
 extern crate wasm_bindgen;
@@ -13,6 +14,8 @@ use wasm_bindgen::prelude::*;
 
 pub use board::Board;
 pub use game::Game;
+pub use comp::Computer;
+pub use paint::Painter;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -30,9 +33,6 @@ macro_rules! log {
 
 #[wasm_bindgen]
 pub fn init_game() {
-    log!("initialising wasm");
+    log!("Initialising WebAssembly");
     utils::set_panic_hook();
-
-    #[cfg(feature = "random_init")]
-    log!("random layout enabled");
 }

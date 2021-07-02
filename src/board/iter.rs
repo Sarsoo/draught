@@ -1,4 +1,4 @@
-use crate::board::{Board, Piece, Square};
+use crate::board::{Board, Square};
 use crate::board::enums::*;
 
 pub struct RowIndexIterator<'a> {
@@ -104,9 +104,10 @@ impl<'a> Iterator for PieceIterator<'a> {
 pub mod tests {
     use super::*;
     use crate::board::enums::SquareState;
+    use crate::board::Piece;
     use wasm_bindgen_test::*;
 
-    use crate::log;
+    // use crate::log;
 
     wasm_bindgen_test_configure!(run_in_browser);
 

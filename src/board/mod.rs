@@ -14,6 +14,8 @@ use iter::*;
 use std::fmt::{Display, Write};
 use std::option::Option;
 
+use crate::log;
+
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
@@ -119,8 +121,8 @@ impl Square {
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct BrdIdx {
-    row: usize,
-    col: usize
+    pub row: usize,
+    pub col: usize
 }
 
 #[wasm_bindgen]
@@ -781,10 +783,13 @@ impl Display for Board {
             for j in 0..self.width {
                 let idx = self.cell_index(i, j);
 
-                match self.cell_state(idx) {
-                    Empty => { write!(string, "_ "); },
-                    Occupied => { write!(string, "{} ", self.cell(idx).occupant.unwrap().team); },
-                    Unplayable => { write!(string, ". "); },
+                let result = match self.cell_state(idx) {
+                    Empty => write!(string, "_ "),
+                    Occupied => write!(string, "{} ", self.cell(idx).occupant.unwrap().team),
+                    Unplayable => write!(string, ". "),
+                };
+                if let Err(err) = result {
+                    log!("Error printing cell state, ({}, {}), {}", i, j, err);
                 }
             }
             string.push('\n');

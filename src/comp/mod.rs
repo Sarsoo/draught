@@ -1,21 +1,21 @@
 //! AI player logic
 
-use indextree::{Arena, NodeId, Node};
+use indextree::{Arena, NodeId};
 
 extern crate wasm_bindgen;
-use wasm_bindgen::prelude::*;
+// use wasm_bindgen::prelude::*;
 
-use crate::log;
+// use crate::log;
 
-use crate::board::{Square, Board, BrdIdx};
-use crate::board::enums::{SquareState, MoveType, Moveable, Team, Strength};
+use crate::board::{Board, BrdIdx};
+use crate::board::enums::{MoveType, Moveable, Team};
 use crate::board::iter::{PieceIterator};
 
-use Team::*;
-use Strength::*;
-use SquareState::*;
+// use Team::*;
+// use Strength::*;
+// use SquareState::*;
 
-use std::fmt::{Display, Write};
+// use std::fmt::{Display, Write};
 
 #[cfg(test)] pub mod tests;
 
@@ -116,9 +116,23 @@ impl Computer {
         moves
     }
 
-    pub fn gen_tree(&mut self, board: Board) {
+    // pub fn gen_tree(&mut self, tree: &mut Arena<Board>, board: Board) {
 
-    }
+        // let boards = self.get_move_boards(&board);
+
+        // let root_id = vec!(tree.new_node(board));
+        // let ids = self.insert_boards(boards);
+
+        // for d in 0..self.search_depth {
+
+        //     for root in root_id.iter(){
+        //         for id in ids.into_iter() {
+        //             root.append(id, tree);
+        //         }
+        //     }
+        // }
+
+    // }
 
     pub fn insert_boards(&mut self, boards: Vec<Board>) -> Vec<NodeId> {
         

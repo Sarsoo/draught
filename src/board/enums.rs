@@ -1,7 +1,7 @@
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
-use std::fmt::{Display, Write};
+use std::fmt::{Display};
 
 #[wasm_bindgen]
 #[repr(u8)]

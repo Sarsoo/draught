@@ -1,6 +1,6 @@
 use super::*;
 use wasm_bindgen_test::*;
-use crate::log;
+// use crate::log;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
@@ -13,7 +13,7 @@ wasm_bindgen_test_configure!(run_in_browser);
 
 #[wasm_bindgen_test]
 fn create() {
-    let board = Board::new(STD_WIDTH, STD_HEIGHT, Black);
+    let _ = Board::new(STD_WIDTH, STD_HEIGHT, Black);
     assert!(true);
 }
 

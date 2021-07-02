@@ -1,3 +1,5 @@
+//! Top-level object for managing [`Board`]s, applying and managing turns
+
 use crate::board::Board;
 
 extern crate wasm_bindgen;
@@ -6,12 +8,13 @@ use wasm_bindgen::prelude::*;
 use crate::log;
 
 use crate::board::{Square, BrdIdx};
-use crate::board::enums::{SquareState, Moveable, Team};
+use crate::board::enums::{Moveable, Team};
+use crate::paint::Painter;
 
-use Team::*;
-use SquareState::*;
+// use Team::*;
+// use SquareState::*;
 
-use std::fmt::{Display, Write};
+use std::fmt::{Display};
 
 #[cfg(test)] pub mod tests;
 
@@ -21,6 +24,7 @@ use std::fmt::{Display, Write};
 pub struct Game {
     current: Board,
     previous_boards: Vec<Board>,
+    painter: Option<Painter>
 }
 
 impl Game {
@@ -37,6 +41,16 @@ impl Game {
 
 #[wasm_bindgen]
 impl Game {
+    /// Get pointer to current board's squares
+    pub fn current_board_cells(&self) -> *const Square {
+        self.current.cells()
+    }
+
+    /// Get pointer to current board's squares
+    pub fn current_board_len(&self) -> usize {
+        self.current.num_cells()
+    }
+
     /// Current turn's team
     pub fn current_turn(&self) -> Team {
         self.current.current_turn
@@ -94,6 +108,30 @@ impl Game {
                 Board::new(width, height, first_turn), piece_rows,
             ),
             previous_boards: Vec::with_capacity(10),
+            painter: None,
+        }
+    }
+
+    pub fn new_with_canvas(width: usize, height: usize, piece_rows: usize, first_turn: Team, canvas_id: &str, canvas_width: u32, canvas_height: u32) -> Game {
+        Game {
+            current: Board::init_game(
+                Board::new(width, height, first_turn), piece_rows,
+            ),
+            previous_boards: Vec::with_capacity(10),
+            painter: Some(
+                Painter::new(canvas_width, canvas_height, canvas_id)
+            ),
+        }
+    }
+
+    pub fn set_painter(&mut self, value: Painter) {
+        self.painter = Some(value);
+    }
+
+    pub fn draw(&self) {
+        match &self.painter {
+            Some(p) => p.draw(&self.current),
+            None => log!("No painter to draw board with")
         }
     }
 }

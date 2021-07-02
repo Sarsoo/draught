@@ -1,6 +1,11 @@
 use super::*;
 use wasm_bindgen_test::*;
 
+use crate::board::Square;
+use crate::board::enums::Strength::*;
+
+use Team::*;
+
 wasm_bindgen_test_configure!(run_in_browser);
 
 #[wasm_bindgen_test]
@@ -66,7 +71,7 @@ fn available_moves_jumps() {
 #[wasm_bindgen_test]
 fn available_moves_std_brd() {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
-    let mut brd2 = brd.clone();
+    let brd2 = brd.clone();
     let comp = Computer::new(brd, 3, White);
 
     // log!("{}", brd2);
