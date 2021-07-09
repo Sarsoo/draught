@@ -144,6 +144,8 @@
 <span id="141">141</span>
 <span id="142">142</span>
 <span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Top-level object for managing [`Board`]s, applying and managing turns</span>
 
@@ -204,7 +206,7 @@
     }
 
     <span class="doccomment">/// Attempt to make a move given a source and destination index</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_move</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">from</span>: <span class="ident">BrdIdx</span>, <span class="ident">to</span>: <span class="ident">BrdIdx</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_move</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">from</span>: <span class="ident">BrdIdx</span>, <span class="ident">to</span>: <span class="ident">BrdIdx</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Moveable</span> {
         <span class="kw">let</span> <span class="ident">able</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">can_move</span>(<span class="ident">from</span>, <span class="ident">to</span>);
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Moveable::Allowed</span> <span class="op">=</span> <span class="ident">able</span> {
@@ -223,6 +225,8 @@
 
         <span class="comment">// board has been changed, update player turn</span>
         <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">current_turn</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">current_turn</span>.<span class="ident">opponent</span>();
+
+        <span class="ident">able</span>
     }
 
     <span class="doccomment">/// Update board state with given move and push new board into current state</span>
