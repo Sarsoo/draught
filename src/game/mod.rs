@@ -57,7 +57,7 @@ impl Game {
     }
 
     /// Attempt to make a move given a source and destination index
-    pub fn make_move(&mut self, from: BrdIdx, to: BrdIdx) {
+    pub fn make_move(&mut self, from: BrdIdx, to: BrdIdx) -> Moveable {
         let able = self.current.can_move(from, to);
 
         if let Moveable::Allowed = able {
@@ -76,6 +76,8 @@ impl Game {
 
         // board has been changed, update player turn
         self.current.current_turn = self.current.current_turn.opponent();
+
+        able
     }
 
     /// Update board state with given move and push new board into current state

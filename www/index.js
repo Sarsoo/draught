@@ -1,4 +1,4 @@
-import { Game, Board, BrdIdx, Painter, Team, init_wasm } from "draught";
+import { Game, Board, BrdIdx, Painter, Team, init_wasm, Moveable } from "draught";
 import { memory } from "draught/draught_bg.wasm";
 
 ///////////////////
@@ -28,6 +28,8 @@ const GameState = {
 init_wasm();
 
 // let board = new Board(BOARD_WIDTH, BOARD_HEIGHT, Team.Black);
+
+const statusText = document.getElementById("status-p");
 
 let current_state = GameState.HUMAN_TURN.THINKING;
 let painter = new Painter(CANVAS_WIDTH, CANVAS_HEIGHT, "game-canvas");
@@ -81,9 +83,43 @@ function process_canvas_click(cell_coord) {
             console.log("Your turn, first piece already picked, picking second");
 
             to = cell_coord;
-            game.make_move(from, to);
-            game.draw();
 
+            if(from.col == to.col && from.row == to.row){
+                setStatusText("Move Cancelled");
+            } else {
+
+                let status = game.make_move(from, to);
+
+                if (status == Moveable.Allowed) {
+                    // game.draw();
+                } else {
+                    switch(status) {
+                        case Moveable.Allowed:
+                            break;
+                        case Moveable.IllegalTrajectory:
+                            break;
+                        case Moveable.JumpingSameTeam:
+                            break;
+                        case Moveable.NoJumpablePiece:
+                            break;
+                        case Moveable.OccupiedDest:
+                            break;
+                        case Moveable.OutOfBounds:
+                            break;
+                        case Moveable.UnoccupiedSrc:
+                            break;
+                        case Moveable.Unplayable:
+                            break;
+                        case Moveable.WrongTeamSrc:
+                            break;
+                    }
+                }
+                
+            }
+
+            game.draw();
+            from = null;
+            to = null;
             current_state = GameState.HUMAN_TURN.THINKING;
             
             break;
@@ -99,5 +135,10 @@ function getMousePos(canvas, evt) {
         x: evt.clientX - rect.left,
         y: evt.clientY - rect.top
     };
+}
+
+function setStatusText(txt) {
+    statusText.hidden = false;
+    statusText.innerText = txt;
 }
 
