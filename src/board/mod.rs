@@ -581,6 +581,7 @@ impl Board {
         }
     }
 
+    /// Get cell index of jumpee square given from and to locations
     pub fn jumpee_idx(&self, from: BrdIdx, to: BrdIdx) -> usize {
         let (row_diff, col_diff) = Board::idx_diffs(from, to);
         self.cell_idx(
@@ -628,13 +629,20 @@ impl Board {
         let mut white: isize = 0;
 
         for (_, square) in PieceIterator::new(self) {
-            if let Some(x) = square.occupant {
-                match x.team {
+            if let Some(piece) = square.occupant {
+                
+                // kings are move valuable than men
+                let increment = match piece.strength {
+                    Man => 1,
+                    King => 2,
+                };
+
+                match piece.team {
                     Black => {
-                        black += 1;
+                        black += increment;
                     },
                     White => {
-                        white += 1;
+                        white += increment;
                     },
                 }
             }
@@ -648,6 +656,7 @@ impl Board {
         self.cell(idx).state
     }
 
+    /// Get new board derived from current with given move applied
     pub fn apply_move(&self, from: BrdIdx, to: BrdIdx) -> Board {
         let mut new = self.clone();
 
@@ -666,9 +675,12 @@ impl Board {
             Square::empty() // empty piece
         );
 
+        Board::check_kinged(&mut new, to);
+
         new
     }
 
+    /// Get new board derived from current with given jump applied
     pub fn apply_jump(&self, from: BrdIdx, to: BrdIdx) -> Board {
         let mut new = self.clone();
 
@@ -693,8 +705,17 @@ impl Board {
             Square::empty() // empty piece
         );
 
+        Board::check_kinged(&mut new, to);
 
         new
+    }
+
+    /// Get row index for current team, top row for black, bottom row for white
+    pub fn king_row_idx(&self) -> usize {
+        match self.current_turn {
+            White => self.height - 1,
+            Black => 0,
+        }
     }
 }
 
@@ -723,6 +744,22 @@ impl Board {
     /// Check that the source piece and the jumpee are of opposing teams
     pub fn check_jumpee_team(from: Piece, jumpee: Piece) -> bool {
         return from.team.opponent() == jumpee.team
+    }
+
+    /// Check and apply king strength
+    fn check_kinged(new_board: &mut Board, idx: BrdIdx) {
+        if new_board.king_row_idx() == idx.row {
+            let cell_idx = new_board.cell_idx(idx);
+            let cell = new_board.cell(cell_idx);
+            match cell.occupant {
+                Some(piece) => {
+                    new_board.set_cell(cell_idx, Square::pc(piece.team, King));
+                },
+                None => {
+                    panic!("No piece found when checking king, idx: {}", idx);
+                },
+            }
+        }
     }
 
     /// Initialise a game board without game pieces

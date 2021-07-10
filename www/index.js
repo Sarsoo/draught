@@ -35,23 +35,20 @@ const statusText = document.getElementById("status-p");
 const statusAlert = document.getElementById("status-d");
 const teamText = document.getElementById("team-p");
 
-// const startBtn = document.getElementById("startBtn");
-// startBtn.onclick = start_game;
+const startBtn = document.getElementById("startBtn");
+startBtn.onclick = start_game;
 
 let statusTimeout = null;
 let setStatus = setStatusAlert;
 
 let current_state = GameState.HUMAN_TURN.THINKING;
-let painter = new Painter(CANVAS_WIDTH, CANVAS_HEIGHT, "game-canvas");
-// painter.draw(board);
+
+let game = null;
+let painter = null;
 
 let clicks = [];
 
-let game = new Game(BOARD_WIDTH, BOARD_HEIGHT, PIECE_ROWS, Team.Black);
-game.set_painter(painter);
-game.draw();
-
-updateTeamText();
+start_game();
 
 /////////////////
 //   CANVAS
@@ -75,6 +72,7 @@ canvas.addEventListener("click", (event) => {
 
 function start_game() {
     game = new Game(BOARD_WIDTH, BOARD_HEIGHT, PIECE_ROWS, Team.Black);
+    painter = new Painter(CANVAS_WIDTH, CANVAS_HEIGHT, "game-canvas");
     game.set_painter(painter);
     game.draw();
 
@@ -85,6 +83,7 @@ function start_game() {
 function process_canvas_click(cell_coord) {
 
     switch(current_state) {
+        // first click of a move
         case GameState.HUMAN_TURN.THINKING:
             if (game.current_cell_state(cell_coord).state != SquareState.Occupied ) {
                 return;
@@ -94,31 +93,36 @@ function process_canvas_click(cell_coord) {
                 return;
             }
 
-            console.log("Your turn, first piece picked");
+            // console.log("Your turn, first piece picked");
 
             clicks.push(cell_coord);
-            current_state = GameState.HUMAN_TURN.FROM_SELECTED; 
+            current_state = GameState.HUMAN_TURN.FROM_SELECTED;
+            game.set_selected(cell_coord);
+            game.draw();
             
             break;
+            
+        // second click of a move
         case GameState.HUMAN_TURN.FROM_SELECTED:
-            if (game.current_cell_state(cell_coord).state != SquareState.Empty ) {
-                return;
-            }
 
-            console.log("Your turn, first piece already picked, picking second");
+            // second click is different to first, process as move
+            // otherwise, will skip straight to clean up (clear selected and clicks) 
+            if (!clicks[0].eq(cell_coord)) {
 
-            clicks.push(cell_coord);
-
-            if (clicks.length != 2) {
-                setStatus(`Error: wrong number of clicks to process ${clicks.length}`);
-                console.error(`Error: wrong number of clicks to process ${clicks.length}`);
-
-                return;
-            }
-
-            if (clicks[0].eq(clicks[1])) {
-                setStatus("Move Cancelled");
-            } else {
+                if (game.current_cell_state(cell_coord).state != SquareState.Empty ) {
+                    return;
+                }
+    
+                // console.log("Your turn, first piece already picked, picking second");
+    
+                clicks.push(cell_coord);
+    
+                if (clicks.length != 2) {
+                    setStatus(`Error: wrong number of clicks to process ${clicks.length}`);
+                    console.error(`Error: wrong number of clicks to process ${clicks.length}`);
+    
+                    return;
+                }
 
                 let status = game.make_move(clicks[0], clicks[1]);
 
@@ -153,6 +157,7 @@ function process_canvas_click(cell_coord) {
                 
             }
 
+            game.clear_selected();
             game.draw();
             clicks = [];
             current_state = GameState.HUMAN_TURN.THINKING;

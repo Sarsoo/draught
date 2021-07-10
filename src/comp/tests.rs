@@ -3,19 +3,20 @@ use wasm_bindgen_test::*;
 
 use crate::board::Square;
 use crate::board::enums::Strength::*;
+use crate::log;
 
 use Team::*;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
-#[wasm_bindgen_test]
-fn initial_tree_size() {
-    let brd = Board::new(3, 2, White);
-    let comp = Computer::new(brd, 3, White);
+// #[wasm_bindgen_test]
+// fn initial_tree_size() {
+//     let brd = Board::new(3, 2, White);
+//     let comp = Computer::new(brd, 3, White);
     
-    assert!(!comp.tree.is_empty());
-    assert_eq!(comp.tree.count(), 1);
-}
+//     assert!(!comp.tree.is_empty());
+//     assert_eq!(comp.tree.count(), 1);
+// }
 
 #[wasm_bindgen_test]
 fn available_moves() {
@@ -84,3 +85,21 @@ fn available_moves_std_brd() {
     assert_eq!(moves.len(), 7);
     assert!(moves.into_iter().all(|m| m.mv_type == MoveType::Move));
 }
+
+#[wasm_bindgen_test]
+fn tree_insert() {
+    let brd = Board::init_game(Board::new(8, 8, White), 3);
+    let brd2 = brd.clone();
+    let mut comp = Computer::new(brd, 3, White);
+
+    // log!("{}", brd2);
+
+    let moves = comp.available_turns(&brd2);
+    log!("{}", moves.len());
+
+    let mut tree = Arena::new();    
+    comp.gen_tree(&mut tree, brd2);
+
+    log!("{}", tree.count());
+}
+

@@ -10,7 +10,7 @@ use web_sys::CanvasRenderingContext2d;
 use std::f64;
 
 use crate::log;
-use crate::board::{Board};
+use crate::board::{Board, BrdIdx};
 use crate::board::iter::PieceIterator;
 
 use crate::board::enums::Team::*;
@@ -32,11 +32,16 @@ const DRAW_OUTLINE: bool = true;
 const WHITE_PIECE: &str = "#dbdbdb";
 /// Default hex colour value for black pieces
 const BLACK_PIECE: &str = "#ed0000";
+/// Default hex colour value for selected piece
+const SELECTED_PIECE: &str = "#fffd78";
 
 /// Default hex colour value for white piece outline
 const WHITE_PIECE_OUTLINE: &str = "#9c9c9c";
 /// Default hex colour value for black piece outline
 const BLACK_PIECE_OUTLINE: &str = "#a60000";
+/// Default hex colour value for selected piece outline
+// const SELECTED_PIECE_OUTLINE: &str = "#dedc73";
+const SELECTED_PIECE_OUTLINE: &str = "#d1cf45";
 /// Default hex colour value for black piece outline
 const KING_OUTLINE: &str = "#ffea00";
 /// Whether to outline pieces
@@ -53,15 +58,18 @@ const PIECE_MARGIN: f64 = 10.0;
 pub struct Painter {
     canvas: HtmlCanvasElement,
     context: CanvasRenderingContext2d,
+    selected_idx: Option<BrdIdx>,
 
     white_square: JsValue,
     black_square: JsValue,
 
     white_piece: JsValue,
     black_piece: JsValue,
+    selected_piece: JsValue,
 
     white_piece_line: JsValue,
     black_piece_line: JsValue,
+    selected_piece_line: JsValue,
     king_line: JsValue,
 
     piece_lines: bool,
@@ -76,6 +84,11 @@ pub struct Painter {
 }
 
 impl Painter {
+    /// Set selected piece by board index
+    pub fn set_selected(&mut self, idx: &Option<BrdIdx>) {
+        self.selected_idx = *idx;
+    }
+
     /// Get a canvas by element ID
     fn get_canvas(canvas_id: &str) -> HtmlCanvasElement {
         // JS WINDOW
@@ -142,15 +155,18 @@ impl Painter {
             canvas,
             context,
             width, height,
+            selected_idx: None,
 
             white_square: JsValue::from_str(WHITE_SQUARE),
             black_square: JsValue::from_str(BLACK_SQUARE),
             
             white_piece: JsValue::from_str(WHITE_PIECE),
             black_piece: JsValue::from_str(BLACK_PIECE),
+            selected_piece: JsValue::from_str(SELECTED_PIECE),
 
             white_piece_line: JsValue::from_str(WHITE_PIECE_OUTLINE),
             black_piece_line: JsValue::from_str(BLACK_PIECE_OUTLINE),
+            selected_piece_line: JsValue::from_str(SELECTED_PIECE_OUTLINE),
             king_line: JsValue::from_str(KING_OUTLINE),
             piece_lines: DRAW_PIECE_OUTLINES,
             piece_line_width: PIECE_OUTLINE_WIDTH,
@@ -172,15 +188,18 @@ impl Painter {
             canvas,
             context,
             width, height,
+            selected_idx: None,
 
             white_square: JsValue::from_str(WHITE_SQUARE),
             black_square: JsValue::from_str(BLACK_SQUARE),
             
             white_piece: JsValue::from_str(WHITE_PIECE),
             black_piece: JsValue::from_str(BLACK_PIECE),
+            selected_piece: JsValue::from_str(SELECTED_PIECE),
 
             white_piece_line: JsValue::from_str(WHITE_PIECE_OUTLINE),
             black_piece_line: JsValue::from_str(BLACK_PIECE_OUTLINE),
+            selected_piece_line: JsValue::from_str(SELECTED_PIECE_OUTLINE),
             king_line: JsValue::from_str(KING_OUTLINE),
             piece_lines: DRAW_PIECE_OUTLINES,
             piece_line_width: PIECE_OUTLINE_WIDTH,
@@ -334,6 +353,32 @@ impl Painter {
 
                 },
                 None => panic!("No piece found when attempting to draw, idx: {}, square: {:?}", idx, square),
+            }
+        }
+
+        if let Some(selected_idx) = self.selected_idx {
+            self.context.set_fill_style(&self.selected_piece);
+            self.context.set_stroke_style(&self.selected_piece_line);
+
+            let center_x: f64 = (selected_idx.col as f64 * cell_width as f64) + (cell_width as f64) / 2.0;
+            let center_y: f64 = (selected_idx.row as f64 * cell_height as f64) + (cell_height as f64) / 2.0;
+
+            self.context.begin_path();
+            match self.context.arc(
+                center_x, 
+                center_y, 
+                (cell_width as f64 / 2.0) - PIECE_MARGIN, // radius 
+                0.0, // start angle
+                f64::consts::PI * 2.0) // end angle
+            {
+                Ok(res) => res,
+                Err(err) => log!("Failed to paint selected piece, idx: {}, {:?}", selected_idx, err),
+            };
+            self.context.fill();
+
+            if self.piece_lines {
+                self.context.set_line_width(self.piece_line_width);
+                self.context.stroke()
             }
         }
     }

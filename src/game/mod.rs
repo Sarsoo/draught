@@ -8,11 +8,11 @@ use wasm_bindgen::prelude::*;
 use crate::log;
 
 use crate::board::{Square, BrdIdx};
-use crate::board::enums::{Moveable, Team};
+use crate::board::enums::{SquareState, Moveable, Team};
 use crate::paint::Painter;
 
 // use Team::*;
-// use SquareState::*;
+use SquareState::*;
 
 use std::fmt::{Display};
 
@@ -23,6 +23,7 @@ use std::fmt::{Display};
 #[derive(Debug)]
 pub struct Game {
     current: Board,
+    selected_piece: Option<BrdIdx>,
     previous_boards: Vec<Board>,
     painter: Option<Painter>
 }
@@ -56,8 +57,33 @@ impl Game {
         self.current.current_turn
     }
 
+    /// Get square on current board for given index
     pub fn current_cell_state(&self, idx: &BrdIdx) -> Square {
         self.current.cell(self.current.cell_idx(*idx))
+    }
+
+    /// Set given index as selected piece
+    /// TODO: Check whether valid square?
+    pub fn set_selected(&mut self, idx: &BrdIdx) {
+        
+        if self.current.cell(self.current.cell_idx(*idx)).state != Occupied {
+            panic!("Tried to select an unoccupied or empty square");
+        } 
+
+        self.selected_piece = Some(*idx);
+        match &mut self.painter {
+            Some(p) => p.set_selected(&Some(*idx)),
+            None => {},
+        }
+    }
+
+    /// Clear currently selected piece
+    pub fn clear_selected(&mut self) {
+        self.selected_piece = None;
+        match &mut self.painter {
+            Some(p) => p.set_selected(&None),
+            None => {},
+        }
     }
 
     /// Attempt to make a move given a source and destination index
@@ -114,6 +140,7 @@ impl Game {
             current: Board::init_game(
                 Board::new(width, height, first_turn), piece_rows,
             ),
+            selected_piece: None,
             previous_boards: Vec::with_capacity(10),
             painter: None,
         }
@@ -124,6 +151,7 @@ impl Game {
             current: Board::init_game(
                 Board::new(width, height, first_turn), piece_rows,
             ),
+            selected_piece: None,
             previous_boards: Vec::with_capacity(10),
             painter: Some(
                 Painter::new(canvas_width, canvas_height, canvas_id)

@@ -37,7 +37,6 @@ impl Move {
 /// Root-level structure for managing the game as a collection of board states
 #[derive(Debug)]
 pub struct Computer {
-    pub tree: Arena<Board>,
     pub root_node_id: NodeId,
     pub search_depth: usize,
     pub team: Team,
@@ -48,19 +47,13 @@ impl Computer {
         let mut tree = Arena::new();
         let root_node_id = tree.new_node(initial_board);
         Computer {
-            tree,
             root_node_id,
             search_depth,
             team
         }
     }
 
-    pub fn update_board(&mut self, new_board: Board) {
-        let mut tree = Arena::new();
-        tree.new_node(new_board);
-        self.tree = tree;
-    }
-
+    /// Get vector of available moves for a given board
     pub fn available_turns(&self, board: &Board) -> Vec<Move> {
 
         // allocate capacity for 2 moves per piece, likely too much but will be shrunk
@@ -94,7 +87,7 @@ impl Computer {
                             panic!("Unable to unwrap adjacent indices, from: {}, brd: {}", from_brd_idx, board);
                         }
 
-                        // iterate over adjacent indices
+                        // iterate over jumpable indices
                         if let Some(jump) = jump_op {
                             for i in jump {
                                 let to_brd_idx = board.board_index(i);
@@ -116,29 +109,26 @@ impl Computer {
         moves
     }
 
-    // pub fn gen_tree(&mut self, tree: &mut Arena<Board>, board: Board) {
+    pub fn gen_tree(&mut self, tree: &mut Arena<Board>, board: Board) {
 
-        // let boards = self.get_move_boards(&board);
+        // possible boards from given
+        let boards = self.get_move_boards(&board);
 
-        // let root_id = vec!(tree.new_node(board));
-        // let ids = self.insert_boards(boards);
+        // root node of tree
+        let root = tree.new_node(board);
 
-        // for d in 0..self.search_depth {
+        // insert possible boards
+        let ids = self.insert_boards(tree, boards);
+        // append ids to root node
+        ids.iter().for_each( |id| root.append(*id, tree) );
 
-        //     for root in root_id.iter(){
-        //         for id in ids.into_iter() {
-        //             root.append(id, tree);
-        //         }
-        //     }
-        // }
+    }
 
-    // }
-
-    pub fn insert_boards(&mut self, boards: Vec<Board>) -> Vec<NodeId> {
+    pub fn insert_boards(&mut self, tree: &mut Arena<Board>, boards: Vec<Board>) -> Vec<NodeId> {
         
         boards
         .into_iter().map(
-            |b| self.tree.new_node(b)
+            |b| tree.new_node(b)
         ).collect()
     }
 
