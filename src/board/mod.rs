@@ -133,6 +133,10 @@ impl BrdIdx {
             row, col
         }
     }
+
+    pub fn eq (&self, other: &BrdIdx) -> bool {
+        *self == *other
+    }
 }
 
 impl Display for BrdIdx {

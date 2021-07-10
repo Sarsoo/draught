@@ -56,6 +56,10 @@ impl Game {
         self.current.current_turn
     }
 
+    pub fn current_cell_state(&self, idx: BrdIdx) -> Square {
+        self.current.cell(self.current.cell_idx(idx))
+    }
+
     /// Attempt to make a move given a source and destination index
     pub fn make_move(&mut self, from: BrdIdx, to: BrdIdx) -> Moveable {
         let able = self.current.can_move(from, to);
