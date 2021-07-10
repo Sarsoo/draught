@@ -152,16 +152,6 @@
 <span id="149">149</span>
 <span id="150">150</span>
 <span id="151">151</span>
-<span id="152">152</span>
-<span id="153">153</span>
-<span id="154">154</span>
-<span id="155">155</span>
-<span id="156">156</span>
-<span id="157">157</span>
-<span id="158">158</span>
-<span id="159">159</span>
-<span id="160">160</span>
-<span id="161">161</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! AI player logic</span>
 
@@ -202,7 +192,6 @@
 <span class="doccomment">/// Root-level structure for managing the game as a collection of board states</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Computer</span> {
-    <span class="kw">pub</span> <span class="ident">tree</span>: <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">root_node_id</span>: <span class="ident">NodeId</span>,
     <span class="kw">pub</span> <span class="ident">search_depth</span>: <span class="ident">usize</span>,
     <span class="kw">pub</span> <span class="ident">team</span>: <span class="ident">Team</span>,
@@ -213,19 +202,13 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">Arena::new</span>();
         <span class="kw">let</span> <span class="ident">root_node_id</span> <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">new_node</span>(<span class="ident">initial_board</span>);
         <span class="ident">Computer</span> {
-            <span class="ident">tree</span>,
             <span class="ident">root_node_id</span>,
             <span class="ident">search_depth</span>,
             <span class="ident">team</span>
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update_board</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">new_board</span>: <span class="ident">Board</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">Arena::new</span>();
-        <span class="ident">tree</span>.<span class="ident">new_node</span>(<span class="ident">new_board</span>);
-        <span class="self">self</span>.<span class="ident">tree</span> <span class="op">=</span> <span class="ident">tree</span>;
-    }
-
+    <span class="doccomment">/// Get vector of available moves for a given board</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">available_turns</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">board</span>: <span class="kw-2">&amp;</span><span class="ident">Board</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Move</span><span class="op">&gt;</span> {
 
         <span class="comment">// allocate capacity for 2 moves per piece, likely too much but will be shrunk</span>
@@ -259,7 +242,7 @@
                             <span class="macro">panic!</span>(<span class="string">&quot;Unable to unwrap adjacent indices, from: {}, brd: {}&quot;</span>, <span class="ident">from_brd_idx</span>, <span class="ident">board</span>);
                         }
 
-                        <span class="comment">// iterate over adjacent indices</span>
+                        <span class="comment">// iterate over jumpable indices</span>
                         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">jump</span>) <span class="op">=</span> <span class="ident">jump_op</span> {
                             <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">jump</span> {
                                 <span class="kw">let</span> <span class="ident">to_brd_idx</span> <span class="op">=</span> <span class="ident">board</span>.<span class="ident">board_index</span>(<span class="ident">i</span>);
@@ -281,29 +264,26 @@
         <span class="ident">moves</span>
     }
 
-    <span class="comment">// pub fn gen_tree(&amp;mut self, tree: &amp;mut Arena&lt;Board&gt;, board: Board) {</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gen_tree</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span>, <span class="ident">board</span>: <span class="ident">Board</span>) {
 
-        <span class="comment">// let boards = self.get_move_boards(&amp;board);</span>
+        <span class="comment">// possible boards from given</span>
+        <span class="kw">let</span> <span class="ident">boards</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_move_boards</span>(<span class="kw-2">&amp;</span><span class="ident">board</span>);
 
-        <span class="comment">// let root_id = vec!(tree.new_node(board));</span>
-        <span class="comment">// let ids = self.insert_boards(boards);</span>
+        <span class="comment">// root node of tree</span>
+        <span class="kw">let</span> <span class="ident">root</span> <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">new_node</span>(<span class="ident">board</span>);
 
-        <span class="comment">// for d in 0..self.search_depth {</span>
+        <span class="comment">// insert possible boards</span>
+        <span class="kw">let</span> <span class="ident">ids</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">insert_boards</span>(<span class="ident">tree</span>, <span class="ident">boards</span>);
+        <span class="comment">// append ids to root node</span>
+        <span class="ident">ids</span>.<span class="ident">iter</span>().<span class="ident">for_each</span>( <span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="ident">root</span>.<span class="ident">append</span>(<span class="kw-2">*</span><span class="ident">id</span>, <span class="ident">tree</span>) );
 
-        <span class="comment">//     for root in root_id.iter(){</span>
-        <span class="comment">//         for id in ids.into_iter() {</span>
-        <span class="comment">//             root.append(id, tree);</span>
-        <span class="comment">//         }</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
+    }
 
-    <span class="comment">// }</span>
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert_boards</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">boards</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert_boards</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span>, <span class="ident">boards</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
         
         <span class="ident">boards</span>
         .<span class="ident">into_iter</span>().<span class="ident">map</span>(
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">new_node</span>(<span class="ident">b</span>)
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">tree</span>.<span class="ident">new_node</span>(<span class="ident">b</span>)
         ).<span class="ident">collect</span>()
     }
 
