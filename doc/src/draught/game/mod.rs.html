@@ -146,6 +146,10 @@
 <span id="143">143</span>
 <span id="144">144</span>
 <span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Top-level object for managing [`Board`]s, applying and managing turns</span>
 
@@ -203,6 +207,10 @@
     <span class="doccomment">/// Current turn&#39;s team</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_turn</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Team</span> {
         <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">current_turn</span>
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_cell_state</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">idx</span>: <span class="ident">BrdIdx</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Square</span> {
+        <span class="self">self</span>.<span class="ident">current</span>.<span class="ident">cell</span>(<span class="self">self</span>.<span class="ident">current</span>.<span class="ident">cell_idx</span>(<span class="ident">idx</span>))
     }
 
     <span class="doccomment">/// Attempt to make a move given a source and destination index</span>
