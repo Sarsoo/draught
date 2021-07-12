@@ -677,6 +677,9 @@ impl Board {
 
         Board::check_kinged(&mut new, to);
 
+        // board has been changed, update player turn
+        new.current_turn = new.current_turn.opponent();
+
         new
     }
 
@@ -706,6 +709,9 @@ impl Board {
         );
 
         Board::check_kinged(&mut new, to);
+
+        // board has been changed, update player turn
+        new.current_turn = new.current_turn.opponent();
 
         new
     }

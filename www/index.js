@@ -5,13 +5,14 @@ import { Game, Board, BrdIdx, Painter, Team, init_wasm, Moveable, SquareState, S
 //    CONSTS
 ///////////////////
 
-const CANVAS_WIDTH = 480;
-const CANVAS_HEIGHT = 480;
+const CANVAS_WIDTH = 720;
+const CANVAS_HEIGHT = 720;
 
-const BOARD_WIDTH = 8;
-const BOARD_HEIGHT = 8;
+var BOARD_WIDTH = 8;
+var BOARD_HEIGHT = 8;
 
-const PIECE_ROWS = 3;
+var PIECE_ROWS = 3;
+var SEARCH_DEPTH = 4;
 
 const STATUS_TIMEOUT = 3000;
 
@@ -34,6 +35,7 @@ init_wasm();
 const statusText = document.getElementById("status-p");
 const statusAlert = document.getElementById("status-d");
 const teamText = document.getElementById("team-p");
+const nodeCountText = document.getElementById("node-count");
 
 const startBtn = document.getElementById("startBtn");
 startBtn.onclick = start_game;
@@ -59,24 +61,25 @@ canvas.addEventListener("click", (event) => {
     var mousepos = getMousePos(canvas, event);
     // console.log(mousepos);
     var cell = new BrdIdx(
-        Math.floor((mousepos.y / CANVAS_HEIGHT) * BOARD_HEIGHT),
-        Math.floor((mousepos.x / CANVAS_WIDTH) * BOARD_WIDTH),
+        Math.floor((mousepos.y / canvas.clientHeight) * BOARD_HEIGHT),
+        Math.floor((mousepos.x / canvas.clientWidth) * BOARD_WIDTH),
     );
     // console.log(cell);
     process_canvas_click(cell);
-})
+});
 
 ////////////////
 //   FUNCS
 ////////////////
 
 function start_game() {
-    game = new Game(BOARD_WIDTH, BOARD_HEIGHT, PIECE_ROWS, Team.Black);
+    game = new Game(BOARD_WIDTH, BOARD_HEIGHT, PIECE_ROWS, Team.Black, SEARCH_DEPTH);
     painter = new Painter(CANVAS_WIDTH, CANVAS_HEIGHT, "game-canvas");
     game.set_painter(painter);
     game.draw();
 
     updateTeamText();
+    clicks = [];
     current_state = GameState.HUMAN_TURN.THINKING;
 }
 
@@ -128,6 +131,14 @@ function process_canvas_click(cell_coord) {
 
                 switch(status) {
                     case Moveable.Allowed:
+                        console.log(`Score after your turn: ${game.score()}`);
+
+                        if (aiCheckBox.checked) {
+                            game.ai_move();
+                            nodeCountText.innerText = `searched ${game.last_node_count.toLocaleString("en-GB")} possible moves`;
+                            console.log(`Score after the AI's turn: ${game.score()}`);
+                        }
+
                         break;
                     case Moveable.IllegalTrajectory:
                         setStatus("You can't move like that!");
@@ -220,3 +231,67 @@ function updateTeamText(){
             break;
     }
 }
+
+////////////////
+//     UI
+////////////////
+
+const widthBox = document.getElementById("width");
+/**
+ * Handler for width input box change, start a new game
+ */
+const onWidth = () => {
+
+    BOARD_WIDTH = parseInt(widthBox.value);
+    start_game();
+}
+widthBox.onchange = onWidth;
+widthBox.value = 8;
+
+const heightBox = document.getElementById("height");
+/**
+ * Handler for height input box change, start a new game
+ */
+const onHeight = () => {
+
+    BOARD_HEIGHT = parseInt(heightBox.value);
+    pieceRowsBox.max =  (BOARD_HEIGHT / 2) - 1;
+    start_game();
+}
+heightBox.onchange = onHeight;
+heightBox.value = 8;
+
+const pieceRowsBox = document.getElementById("play_rows");
+/**
+ * Handler for piece rows input box change, start a new game
+ */
+const onPieceRows = () => {
+
+    PIECE_ROWS = parseInt(pieceRowsBox.value);
+    console.log(typeof(PIECE_ROWS));
+    start_game();
+}
+pieceRowsBox.onchange = onPieceRows;
+pieceRowsBox.value = 3;
+
+const aiSearchDepthBox = document.getElementById("ai_search_depth");
+/**
+ * Handler for AI search depth input box change, start a new game
+ */
+const onAISearchDepth = () => {
+
+    SEARCH_DEPTH = parseInt(aiSearchDepthBox.value);
+    game.set_search_depth(SEARCH_DEPTH);
+}
+aiSearchDepthBox.onchange = onAISearchDepth;
+aiSearchDepthBox.value = 4;
+
+const aiCheckBox = document.getElementById("ai-checkbox");
+/**
+ * Handler for height input box change, get a new universe of given size
+ */
+const onAICheck = () => {
+    console.log(aiCheckBox.checked);
+}
+aiCheckBox.onchange = onAICheck;
+// aiCheckBox.checked = true;

@@ -10,6 +10,7 @@ use crate::log;
 use crate::board::{Square, BrdIdx};
 use crate::board::enums::{SquareState, Moveable, Team};
 use crate::paint::Painter;
+use crate::comp::Computer;
 
 // use Team::*;
 use SquareState::*;
@@ -25,7 +26,9 @@ pub struct Game {
     current: Board,
     selected_piece: Option<BrdIdx>,
     previous_boards: Vec<Board>,
-    painter: Option<Painter>
+    painter: Option<Painter>,
+    search_depth: usize,
+    pub last_node_count: usize,
 }
 
 impl Game {
@@ -57,9 +60,18 @@ impl Game {
         self.current.current_turn
     }
 
+    /// Current board's score
+    pub fn score(&self) -> isize {
+        self.current.score()
+    }
+
     /// Get square on current board for given index
     pub fn current_cell_state(&self, idx: &BrdIdx) -> Square {
         self.current.cell(self.current.cell_idx(*idx))
+    }
+
+    pub fn set_search_depth(&mut self, search_depth: usize) {
+        self.search_depth = search_depth;
     }
 
     /// Set given index as selected piece
@@ -101,9 +113,6 @@ impl Game {
                 self.execute_jump(from, to);
             }
 
-            // board has been changed, update player turn
-            self.current.current_turn = self.current.current_turn.opponent();
-
         } else {
             log!("Unable to make move, {:?}", able);
         }
@@ -135,7 +144,7 @@ impl Game {
     }
 
     #[wasm_bindgen(constructor)]
-    pub fn new(width: usize, height: usize, piece_rows: usize, first_turn: Team) -> Game {
+    pub fn new(width: usize, height: usize, piece_rows: usize, first_turn: Team, search_depth: usize) -> Game {
         Game {
             current: Board::init_game(
                 Board::new(width, height, first_turn), piece_rows,
@@ -143,10 +152,12 @@ impl Game {
             selected_piece: None,
             previous_boards: Vec::with_capacity(10),
             painter: None,
+            search_depth,
+            last_node_count: 0,
         }
     }
 
-    pub fn new_with_canvas(width: usize, height: usize, piece_rows: usize, first_turn: Team, canvas_id: &str, canvas_width: u32, canvas_height: u32) -> Game {
+    pub fn new_with_canvas(width: usize, height: usize, piece_rows: usize, first_turn: Team, search_depth: usize, canvas_id: &str, canvas_width: u32, canvas_height: u32) -> Game {
         Game {
             current: Board::init_game(
                 Board::new(width, height, first_turn), piece_rows,
@@ -156,6 +167,8 @@ impl Game {
             painter: Some(
                 Painter::new(canvas_width, canvas_height, canvas_id)
             ),
+            search_depth,
+            last_node_count: 0,
         }
     }
 
@@ -167,6 +180,19 @@ impl Game {
         match &self.painter {
             Some(p) => p.draw(&self.current),
             None => log!("No painter to draw board with")
+        }
+    }
+
+    pub fn ai_move(&mut self) {
+        
+        let mut comp = Computer::new(self.search_depth, self.current.current_turn);
+        let new_brd = comp.get_move(self.current.clone());
+
+        self.last_node_count = comp.last_node_count;
+
+        match new_brd {
+            Some(brd) => self.push_new_board(brd),
+            None => panic!("No AI move returned"),
         }
     }
 }

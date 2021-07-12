@@ -47,10 +47,9 @@ const KING_OUTLINE: &str = "#ffea00";
 /// Whether to outline pieces
 const DRAW_PIECE_OUTLINES: bool = true;
 /// Line width for outlining pieces
-const PIECE_OUTLINE_WIDTH: f64 = 3.0;
-
+const PIECE_OUTLINE_WIDTH: f64 = 6.0;
 /// Margin from square to define piece radius
-const PIECE_MARGIN: f64 = 10.0;
+const PIECE_MARGIN: f64 = 14.0;
 
 /// Used to paint boards onto HTML canvases
 #[wasm_bindgen]

@@ -25,6 +25,46 @@
         h1 {
             font-family: monospace;
         }
+
+        #game-canvas {
+            width: 1000px;
+            height: 1000px;
+        }
+
+        @media only screen and (max-width: 1000px) {
+            #game-canvas {
+                width: 700px;
+                height: 700px;
+            }
+        }
+
+        @media only screen and (max-width: 800px) {
+            #game-canvas {
+                width: 600px;
+                height: 600px;
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            #game-canvas {
+                width: 400px;
+                height: 400px;
+            }
+        }
+
+        @media only screen and (max-width: 400px) {
+            #game-canvas {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        @media only screen and (max-width: 300px) {
+            #game-canvas {
+                width: 200px;
+                height: 200px;
+            }
+        }
     </style>
 </head>
 
@@ -42,10 +82,55 @@
             <div class="row p-3">
                 <div class="col-sm-12">
                     <a href="doc/draught" class="btn btn-secondary" target="_blank">Docs</a>
-                    <button id="startBtn" class="btn btn-primary">Start</button>
+                    <button id="startBtn" class="btn btn-success">Start</button>
                 </div>
             </div>
 
+            <div class="row p-3">
+                <div class="col-sm-4">
+                    <input type="number" 
+                        id="width" 
+                        name="width" 
+                        min="3" max="40" value="8" 
+                        class="form-control">
+                    <label for="width">width</label>
+                </div>
+                <div class="col-sm-4">
+                    <input type="number" 
+                        id="height" 
+                        name="height" 
+                        min="3" max="40" value="8" 
+                        class="form-control">
+                    <label for="height">height</label>
+                </div>
+                <div class="col-sm-4">
+                    <input type="number" 
+                        id="play_rows" 
+                        name="play_rows" 
+                        min="1" max="3" value="3" 
+                        class="form-control">
+                    <label for="play_rows">playable rows</label>
+                </div>
+            </div>
+            <div class="row p-3">
+                <div class="col-sm-4">
+                    <input class="form-check-input" type="checkbox" value="" id="ai-checkbox" checked="checked">
+                    <label class="form-check-label" for="ai-checkbox">
+                        AI Player
+                    </label>
+                </div>
+                <div class="col-sm-4">
+                    <input type="number" 
+                        id="ai_search_depth" 
+                        name="ai_search_depth" 
+                        min="1" max="10" value="4" 
+                        class="form-control">
+                    <label for="ai_search_depth">ai difficulty</label>
+                </div>
+                <div class="col-sm-4">
+                    <p class="text-muted" id="node-count"></p>
+                </div>
+            </div>
             <div class="row p-3">
                 <div class="col-sm-12">
                     <h1 id="team-p"></h1>

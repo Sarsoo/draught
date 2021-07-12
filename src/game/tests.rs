@@ -11,7 +11,7 @@ use crate::board::enums::Team::*;
 
 #[wasm_bindgen_test]
 fn make_move() {
-    let mut game = Game::new(8, 8, 3, Black);
+    let mut game = Game::new(8, 8, 3, Black, 3);
     // log!("{}", game);
     // log!("{:?}", game);
 
@@ -39,7 +39,7 @@ fn make_move() {
 
 #[wasm_bindgen_test]
 fn make_jump() {
-    let mut game = Game::new(8, 8, 3, Black);
+    let mut game = Game::new(8, 8, 3, Black, 3);
     // log!("{}", game);
     // log!("{:?}", game);
 
