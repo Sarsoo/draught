@@ -61,9 +61,9 @@
 
 <span class="comment">// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global</span>
 <span class="comment">// allocator.</span>
-<span class="comment">// #[cfg(feature = &quot;wee_alloc&quot;)]</span>
-<span class="comment">// #[global_allocator]</span>
-<span class="comment">// static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wee_alloc&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">global_allocator</span>]</span>
+<span class="kw">static</span> <span class="ident">ALLOC</span>: <span class="ident">wee_alloc::WeeAlloc</span> <span class="op">=</span> <span class="ident">wee_alloc::WeeAlloc::INIT</span>;
 
 <span class="doccomment">/// Wrap the [`web_sys`] access to the browser console in a macro for easy logging</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>

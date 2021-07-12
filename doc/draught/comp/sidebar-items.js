@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Computer","Root-level structure for managing the game as a collection of board states"],["Move",""]]});
+initSidebarItems({"struct":[["BoardNode",""],["Computer","Root-level structure for managing the game as a collection of board states"],["Move",""]]});
