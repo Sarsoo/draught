@@ -20,6 +20,7 @@ use Team::*;
 
 #[cfg(test)] pub mod tests;
 
+/// Represents a move by source/destination indices and the move type
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Move {
     from: BrdIdx,
@@ -35,6 +36,7 @@ impl Move {
     }
 }
 
+/// For storing boards in the AI tree, stores board with score for comparisons
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct BoardNode {
     pub board: Board,
@@ -148,7 +150,7 @@ impl Computer {
     }
 
     /// Propagate scores up the tree employing MiniMax algorithm
-    fn propagate_scores(&mut self, tree: Arena<BoardNode>, root: NodeId) -> Arena<BoardNode> {
+    fn propagate_scores(tree: Arena<BoardNode>, root: NodeId) -> Arena<BoardNode> {
 
         // need to clone tree because we iterate over it and edit it at the same time
         let mut new_tree = tree.clone();
@@ -158,17 +160,17 @@ impl Computer {
             if let NodeEdge::End(node_id) = n {
 
                 // board current being looked at
-                let board_node = tree
+                let board_node = new_tree
                     .get(node_id) // get Node
                     .expect("No node returned for node id")
                     .get(); // get BoardNode from Node
                 
                 // get scores of each nodes children
                 let children_scores: Vec<isize> = node_id // current node
-                    .children(&tree)
+                    .children(&new_tree)
                     .into_iter()
                     .map(
-                        |n| tree
+                        |n| new_tree
                             .get(n) // get Node
                             .expect("No node returned for node id") // unwrap, should always be fine
                             .get() // get BoardNode from Node
@@ -192,6 +194,7 @@ impl Computer {
         new_tree
     }
 
+    /// Get best of given scores for given team
     fn best_score(board: &Board, children_scores: Vec<isize>) -> isize {
         match board.current_turn { // MiniMax algorithm here
             // whether maximised or minimsed is based on current player
@@ -305,6 +308,7 @@ impl Computer {
             ).collect()
     }
 
+    /// Get a new board based on the given using MiniMax to make decisions 
     pub fn get_move(&mut self, brd: Board) -> Option<Board> {
 
         let mut tree = Arena::new();
@@ -321,7 +325,7 @@ impl Computer {
         self.insert_board_scores(&mut tree, lowest_nodes);
 
         // propagate the scores up the tree, the root node has the best score
-        let tree = self.propagate_scores(tree, root_node);
+        let tree = Computer::propagate_scores(tree, root_node);
 
         // get root node to compare
         let root_board_node = tree
@@ -329,22 +333,22 @@ impl Computer {
             .expect("No node returned for node id")
             .get(); // get BoardNode from Node
 
-        log!("{}", root_board_node.score);
-        // log!("{:#?}", tree);
-     
         // when boards have equal scores, store for shuffling and selection
         let mut equal_scores = Vec::with_capacity(10);
 
         // DEBUG
-        let scores: Vec<NodeId> = root_node
-            .children(&tree)
-            .collect();
-        let scores: Vec<isize> = scores
-            .into_iter()
-            .map(|n| tree.get(n).unwrap().get().score)
-            .collect();
-        log!("SCORES: {:?}", scores);
-        // DEBUG
+        #[cfg(feature = "debug_logs")]
+        {
+            log!("Current root score: {}", root_board_node.score);
+            let scores: Vec<NodeId> = root_node
+                .children(&tree)
+                .collect();
+            let scores: Vec<isize> = scores
+                .into_iter()
+                .map(|n| tree.get(n).unwrap().get().score)
+                .collect();
+            log!("Next boards scores: {:?}", scores);
+        }
 
         // search through root node's children for the same score
         for n in root_node.children(&tree) {

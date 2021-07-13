@@ -1,6 +1,6 @@
 {
   "name": "draught",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Rust wasm-based checkers game",
   "main": "index.js",
   "scripts": {

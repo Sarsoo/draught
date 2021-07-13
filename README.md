@@ -5,9 +5,11 @@ Draught
 
 ## [Try it Out!](https://sarsoo.github.io/draught/)
 
-WASM-based checkers game. Looking to implement a minimax based AI.
+WebAssembly-based checkers game with a minimax-based AI player.
 
 Rust WASM module for game logic with a JS frontend for rendering and processing user input.
+
+![Screenshot](./docs/screenshot.png)
 
 ## Building
 

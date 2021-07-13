@@ -5,7 +5,6 @@
 pub mod board;
 pub mod utils;
 pub mod game;
-pub mod player;
 pub mod paint;
 pub mod comp;
 

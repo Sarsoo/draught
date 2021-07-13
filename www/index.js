@@ -15,6 +15,7 @@ var PIECE_ROWS = 3;
 var SEARCH_DEPTH = 4;
 
 const STATUS_TIMEOUT = 3000;
+const WON_TIMEOUT = 3000;
 
 const GameState = {
     HUMAN_TURN: {
@@ -36,10 +37,12 @@ const statusText = document.getElementById("status-p");
 const statusAlert = document.getElementById("status-d");
 const teamText = document.getElementById("team-p");
 const nodeCountText = document.getElementById("node-count");
+const winningText = document.getElementById("winning-p");
 
 const startBtn = document.getElementById("startBtn");
 startBtn.onclick = start_game;
 
+let wonTimeout = null;
 let statusTimeout = null;
 let setStatus = setStatusAlert;
 
@@ -78,7 +81,9 @@ function start_game() {
     game.set_painter(painter);
     game.draw();
 
+    clearInterval(wonTimeout);
     updateTeamText();
+    updateWinningText();
     clicks = [];
     current_state = GameState.HUMAN_TURN.THINKING;
 }
@@ -131,12 +136,10 @@ function process_canvas_click(cell_coord) {
 
                 switch(status) {
                     case Moveable.Allowed:
-                        console.log(`Score after your turn: ${game.score()}`);
 
                         if (aiCheckBox.checked) {
                             game.ai_move();
                             nodeCountText.innerText = `searched ${game.last_node_count.toLocaleString("en-GB")} possible moves`;
-                            console.log(`Score after the AI's turn: ${game.score()}`);
                         }
 
                         break;
@@ -180,6 +183,8 @@ function process_canvas_click(cell_coord) {
     }
 
     updateTeamText();
+    updateWinningText();
+    checkWon();
 }
 
 function getMousePos(canvas, evt) {
@@ -232,6 +237,41 @@ function updateTeamText(){
     }
 }
 
+function updateWinningText(){
+    
+    switch(game.winning()) {
+        case undefined:
+            winningText.innerText = "";
+            break;
+        case Team.White:
+            winningText.innerText = "👑 White 👑";
+            break;
+        case Team.Black:
+            winningText.innerText = "👑 Black 👑";
+            break;
+    }
+}
+
+function checkWon() {
+
+    switch(game.has_won()) {
+        case undefined:
+            break;
+        case Team.White:
+            setStatus("You Lost!");
+            wonTimeout = setInterval(() => {
+                start_game();
+            }, WON_TIMEOUT);
+            break;
+        case Team.Black:
+            setStatus("You Won!", "success");
+            wonTimeout = setInterval(() => {
+                start_game();
+            }, WON_TIMEOUT);
+            break;
+    }
+}
+
 ////////////////
 //     UI
 ////////////////
@@ -268,7 +308,6 @@ const pieceRowsBox = document.getElementById("play_rows");
 const onPieceRows = () => {
 
     PIECE_ROWS = parseInt(pieceRowsBox.value);
-    console.log(typeof(PIECE_ROWS));
     start_game();
 }
 pieceRowsBox.onchange = onPieceRows;
@@ -282,6 +321,10 @@ const onAISearchDepth = () => {
 
     SEARCH_DEPTH = parseInt(aiSearchDepthBox.value);
     game.set_search_depth(SEARCH_DEPTH);
+
+    if(SEARCH_DEPTH > 4) {
+        setStatus("This increases thinking time exponentially, be careful (probably don't go past 6)", "warning");
+    }
 }
 aiSearchDepthBox.onchange = onAISearchDepth;
 aiSearchDepthBox.value = 4;
@@ -291,7 +334,7 @@ const aiCheckBox = document.getElementById("ai-checkbox");
  * Handler for height input box change, get a new universe of given size
  */
 const onAICheck = () => {
-    console.log(aiCheckBox.checked);
+    
 }
 aiCheckBox.onchange = onAICheck;
 // aiCheckBox.checked = true;

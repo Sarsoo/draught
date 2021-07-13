@@ -491,6 +491,7 @@ impl Board {
         }
     }
 
+    /// Check that given move trajectory is valid for a man piece 
     pub fn validate_man_move(&self, from: BrdIdx, to: BrdIdx, from_square_occupant: Piece) -> Moveable {
         let (row_diff, col_diff) = Board::idx_diffs(from, to);
 
@@ -539,6 +540,7 @@ impl Board {
         }
     }
 
+    /// Check that given move trajectory is valid for a king piece 
     pub fn validate_king_move(&self, from: BrdIdx, to: BrdIdx, from_square_occupant: Piece) -> Moveable {
         let (row_diff, col_diff) = Board::idx_diffs(from, to);
 

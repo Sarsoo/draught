@@ -3,6 +3,7 @@ use wasm_bindgen::prelude::*;
 
 use std::fmt::{Display};
 
+/// Move/Jump, for use in Move
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -11,6 +12,7 @@ pub enum MoveType {
     Jump = 1,
 }
 
+/// Black/White
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -20,6 +22,7 @@ pub enum Team {
 }
 
 impl Team {
+    /// Get opposing team
     pub fn opponent(&self) -> Team{
         match self {
             Team::White => Team::Black,
@@ -37,6 +40,7 @@ impl Display for Team {
     }
 }
 
+/// Man/King
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -45,6 +49,7 @@ pub enum Strength {
     King = 1
 }
 
+/// Model board square as Empty/Occupied/Unplayable
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -64,6 +69,7 @@ impl Display for SquareState {
     }
 }
 
+/// Possible outcomes of trying to move
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

@@ -1,6 +1,6 @@
 [package]
 name = "draught"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["aj <andrewjpack@gmail.com>"]
 edition = "2018"
 repository = "https://github.com/Sarsoo/draught"
@@ -10,6 +10,8 @@ crate-type = ["cdylib", "rlib"]
 
 [features]
 default = ["console_error_panic_hook"]
+debug_logs = [] # log extra stuff to the web console
+time_ex = [] # allow time profiling in computer
 
 [dependencies]
 wasm-bindgen = "0.2.74"

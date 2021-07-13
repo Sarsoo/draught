@@ -146,9 +146,21 @@ fn best_scores() {
 }
 
 #[wasm_bindgen_test]
-fn propagate_scores() {
-    let brd = Board::init_game(Board::new(8, 8, White), 3);
-    let mut comp = Computer::new(3, White);
+fn insert_scores_all_take() {
+    // . _ . _ . 
+    // W . W . W 
+    // . B . B . 
+    // _ . _ . _ 
+    
+    // 4 available moves, all are white taking black
+
+    let mut brd = Board::new(5, 4, White);
+    brd.set_cell(brd.cell_idx(BrdIdx::from(1, 2)), Square::pc(White, Man));
+    brd.set_cell(brd.cell_idx(BrdIdx::from(1, 0)), Square::pc(White, Man));
+    brd.set_cell(brd.cell_idx(BrdIdx::from(1, 4)), Square::pc(White, Man));
+    brd.set_cell(brd.cell_idx(BrdIdx::from(2, 1)), Square::pc(Black, Man));
+    brd.set_cell(brd.cell_idx(BrdIdx::from(2, 3)), Square::pc(Black, Man));
+    let mut comp = Computer::new(1, White);
 
     // log!("{}", brd);
 
@@ -156,101 +168,96 @@ fn propagate_scores() {
     let root = tree.new_node(BoardNode::brd(brd));
 
     comp.expand_layer(&mut tree, vec!(root));
-    
-    let moves = comp.propagate_scores(tree, root);
-    // log!("{}", moves.len());
 
-    // log!("{}", tree.count());
+    let lowest_nodes = comp.get_leaf_nodes(&mut tree, root);
+    // insert the board scores for the leaf nodes
+    comp.insert_board_scores(&mut tree, lowest_nodes);
+    
+    let children_scores: Vec<isize> = root // current node
+                    .children(&tree)
+                    .into_iter()
+                    .map(
+                        |n| tree
+                            .get(n) // get Node
+                            .expect("No node returned for node id") // unwrap, should always be fine
+                            .get() // get BoardNode from Node
+                            .score // get score from BoardNode
+                    )
+                    .collect(); // finalise
+
+    assert_eq!(children_scores, vec!(-3, -3, -3, -3));
 }
 
-// #[wasm_bindgen_test]
-// fn tree_2_depth() {
-//     // log!("{}", performance.timing().request_start());
+#[wasm_bindgen_test]
+fn insert_scores_one_take() {
+    // . _ . _ . 
+    // W . _ . W 
+    // . B . _ . 
+    // _ . _ . _ 
+    
+    // 4 available moves, all are white taking black
 
-//     let iter = 3;
-//     let mut times = Vec::with_capacity(iter);
+    let mut brd = Board::new(5, 4, White);
+    // brd.set_cell(brd.cell_idx(BrdIdx::from(1, 2)), Square::pc(White, Man));
+    brd.set_cell(brd.cell_idx(BrdIdx::from(1, 0)), Square::pc(White, Man));
+    brd.set_cell(brd.cell_idx(BrdIdx::from(1, 4)), Square::pc(White, Man));
+    brd.set_cell(brd.cell_idx(BrdIdx::from(2, 1)), Square::pc(Black, Man));
+    // brd.set_cell(brd.cell_idx(BrdIdx::from(2, 3)), Square::pc(Black, Man));
+    let mut comp = Computer::new(1, White);
 
-//     for _ in 0..iter {
-//         times.push(time_tree_gen(6));
-//     }
+    // log!("{}", brd);
 
-//     log!("{:?}", times);
-// }
+    let mut tree = Arena::new();
+    let root = tree.new_node(BoardNode::brd(brd));
 
-// fn time_tree_gen(depth: usize) {
-//     web_sys::console::time_with_label("tree_timer");
+    comp.expand_layer(&mut tree, vec!(root));
 
-//     let mut comp = Computer::new(depth, White);
+    let lowest_nodes = comp.get_leaf_nodes(&mut tree, root);
+    // insert the board scores for the leaf nodes
+    comp.insert_board_scores(&mut tree, lowest_nodes);
+    
+    let children_scores: Vec<isize> = root // current node
+                    .children(&tree)
+                    .into_iter()
+                    .map(
+                        |n| tree
+                            .get(n) // get Node
+                            .expect("No node returned for node id") // unwrap, should always be fine
+                            .get() // get BoardNode from Node
+                            .score // get score from BoardNode
+                    )
+                    .collect(); // finalise
 
-//     let mut tree = Arena::new();  
-//     let brd = Board::init_game(Board::new(8, 8, White), 3);
+    // log!("{:?}", children_scores);
 
-//     comp.gen_tree(&mut tree, brd);
+    assert_eq!(children_scores, vec!(-3, -1));
+}
 
-//     web_sys::console::time_end_with_label("tree_timer");
-//     log!("{}", tree.count());
-// }
+#[cfg(feature = "time_ex")]
+#[wasm_bindgen_test]
+fn tree_2_depth() {
 
-// #[wasm_bindgen_test]
-// fn tree_last_nodes() {
-//     let mut brd = Board::new(2, 2, White);
-//     brd.set_cell(1, Square::pc(White, King));
-//     let mut comp = Computer::new(3, White);
+    let iter = 3;
+    let mut times = Vec::with_capacity(iter);
 
-//     // log!("{}", brd);
-//     // log!("{}", brd.score());
+    for _ in 0..iter {
+        times.push(time_tree_gen(6));
+    }
+}
 
-//     // let moves = comp.available_turns(&brd);
-//     // log!("{}", moves.len());
+#[cfg(feature = "time_ex")]
+fn time_tree_gen(depth: usize) {
+    web_sys::console::time_with_label("tree_timer");
 
-//     let mut tree = Arena::new();    
-//     let root_node = comp.gen_tree(&mut tree, brd);
+    let mut comp = Computer::new(depth, White);
 
-//     let lowest_nodes = comp.get_leaf_nodes(&mut tree, root_node);
+    let mut tree = Arena::new();  
+    let brd = Board::init_game(Board::new(8, 8, White), 3);
 
-//     // log!("{:#?}", lowest_nodes);
+    comp.gen_tree(&mut tree, brd);
 
-//     comp.insert_board_scores(&mut tree, lowest_nodes);
-
-//     // log!("{:#?}", tree);
-//     // log!("{}", tree.count());
-// }
-
-// #[wasm_bindgen_test]
-// fn tree_score_propagation() {
-//     let mut brd = Board::new(4, 4, White);
-//     brd.set_cell(brd.cell_idx(BrdIdx::from(1, 2)), Square::pc(White, Man));
-//     brd.set_cell(brd.cell_idx(BrdIdx::from(1, 0)), Square::pc(White, Man));
-//     brd.set_cell(brd.cell_idx(BrdIdx::from(2, 1)), Square::pc(Black, Man));
-//     let mut comp = Computer::new(1, White);
-
-//     // log!("{}", brd);
-//     // log!("{}", brd.score());
-
-//     // let moves = comp.available_turns(&brd);
-//     // log!("{}", moves.len());
-
-//     let mut tree = Arena::new();    
-//     let root_node = comp.gen_tree(&mut tree, brd);
-//     // log!("{}", root_node);
-
-//     let lowest_nodes = comp.get_leaf_nodes(&mut tree, root_node);
-
-//     // log!("{:#?}", lowest_nodes);
-
-//     comp.insert_board_scores(&mut tree, lowest_nodes);
-
-//     let tree = comp.propagate_scores(tree, root_node);
-
-//     let scores: Vec<NodeId> = root_node
-//             .children(&tree)
-//             .collect();
-//     let scores: Vec<isize> = scores.into_iter().map(|n| tree.get(n).unwrap().get().score).collect();
-//     // log!("SCORES: {:?}", scores);
-
-//     // log!("{:#?}", tree);
-//     // log!("{}", tree.count());
-// }
+    web_sys::console::time_end_with_label("tree_timer");
+}
 
 // #[wasm_bindgen_test]
 // fn tree_get_move() {

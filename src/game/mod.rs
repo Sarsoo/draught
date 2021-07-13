@@ -12,7 +12,7 @@ use crate::board::enums::{SquareState, Moveable, Team};
 use crate::paint::Painter;
 use crate::comp::Computer;
 
-// use Team::*;
+use Team::*;
 use SquareState::*;
 
 use std::fmt::{Display};
@@ -63,6 +63,31 @@ impl Game {
     /// Current board's score
     pub fn score(&self) -> isize {
         self.current.score()
+    }
+
+    /// Get currently winning player
+    pub fn winning(&self) -> Option<Team> {
+        let current_score = self.score();
+
+        if current_score < 0 {
+            Some(White)
+        } else if current_score == 0 {
+            None
+        } else {
+            Some(Black)
+        }
+    }
+
+    /// Check if a player has won
+    pub fn has_won(&self) -> Option<Team> {
+
+        if self.current.num_player(White) == 0 {
+            Some(Black)
+        } else if self.current.num_player(Black) == 0 {
+            Some(White)
+        } else {
+            None
+        }
     }
 
     /// Get square on current board for given index
@@ -143,6 +168,7 @@ impl Game {
         self.current = board;
     }
 
+    /// Get new game without board renderer
     #[wasm_bindgen(constructor)]
     pub fn new(width: usize, height: usize, piece_rows: usize, first_turn: Team, search_depth: usize) -> Game {
         Game {
@@ -157,6 +183,7 @@ impl Game {
         }
     }
 
+    /// Get a new game with canvas ID and dimensions
     pub fn new_with_canvas(width: usize, height: usize, piece_rows: usize, first_turn: Team, search_depth: usize, canvas_id: &str, canvas_width: u32, canvas_height: u32) -> Game {
         Game {
             current: Board::init_game(
@@ -172,10 +199,12 @@ impl Game {
         }
     }
 
+    /// Set painter for rendering boards
     pub fn set_painter(&mut self, value: Painter) {
         self.painter = Some(value);
     }
 
+    /// Draw current board using painter if exists
     pub fn draw(&self) {
         match &self.painter {
             Some(p) => p.draw(&self.current),
@@ -183,6 +212,7 @@ impl Game {
         }
     }
 
+    /// Create computer, get move from current board and update current board
     pub fn ai_move(&mut self) {
         
         let mut comp = Computer::new(self.search_depth, self.current.current_turn);
