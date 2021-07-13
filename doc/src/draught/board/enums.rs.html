@@ -81,12 +81,19 @@
 <span id="78">78</span>
 <span id="79">79</span>
 <span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">wasm_bindgen</span>;
 <span class="kw">use</span> <span class="ident">wasm_bindgen::prelude</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="ident">Display</span>};
 
+<span class="doccomment">/// Move/Jump, for use in Move</span>
 <span class="attribute">#[<span class="ident">wasm_bindgen</span>]</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u8</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
@@ -95,6 +102,7 @@
     <span class="ident">Jump</span> <span class="op">=</span> <span class="number">1</span>,
 }
 
+<span class="doccomment">/// Black/White</span>
 <span class="attribute">#[<span class="ident">wasm_bindgen</span>]</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u8</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
@@ -104,6 +112,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Team</span> {
+    <span class="doccomment">/// Get opposing team</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">opponent</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Team</span>{
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Team::White</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Team::Black</span>,
@@ -121,6 +130,7 @@
     }
 }
 
+<span class="doccomment">/// Man/King</span>
 <span class="attribute">#[<span class="ident">wasm_bindgen</span>]</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u8</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
@@ -129,6 +139,7 @@
     <span class="ident">King</span> <span class="op">=</span> <span class="number">1</span>
 }
 
+<span class="doccomment">/// Model board square as Empty/Occupied/Unplayable</span>
 <span class="attribute">#[<span class="ident">wasm_bindgen</span>]</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u8</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
@@ -148,6 +159,7 @@
     }
 }
 
+<span class="doccomment">/// Possible outcomes of trying to move</span>
 <span class="attribute">#[<span class="ident">wasm_bindgen</span>]</span>
 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u8</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>

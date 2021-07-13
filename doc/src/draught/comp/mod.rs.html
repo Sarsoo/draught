@@ -378,6 +378,10 @@
 <span id="375">375</span>
 <span id="376">376</span>
 <span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! AI player logic</span>
 
@@ -401,6 +405,7 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span> <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">tests</span>;
 
+<span class="doccomment">/// Represents a move by source/destination indices and the move type</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Move</span> {
     <span class="ident">from</span>: <span class="ident">BrdIdx</span>,
@@ -416,6 +421,7 @@
     }
 }
 
+<span class="doccomment">/// For storing boards in the AI tree, stores board with score for comparisons</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BoardNode</span> {
     <span class="kw">pub</span> <span class="ident">board</span>: <span class="ident">Board</span>,
@@ -529,7 +535,7 @@
     }
 
     <span class="doccomment">/// Propagate scores up the tree employing MiniMax algorithm</span>
-    <span class="kw">fn</span> <span class="ident">propagate_scores</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">root</span>: <span class="ident">NodeId</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">propagate_scores</span>(<span class="ident">tree</span>: <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">root</span>: <span class="ident">NodeId</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span> {
 
         <span class="comment">// need to clone tree because we iterate over it and edit it at the same time</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_tree</span> <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">clone</span>();
@@ -539,17 +545,17 @@
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">NodeEdge::End</span>(<span class="ident">node_id</span>) <span class="op">=</span> <span class="ident">n</span> {
 
                 <span class="comment">// board current being looked at</span>
-                <span class="kw">let</span> <span class="ident">board_node</span> <span class="op">=</span> <span class="ident">tree</span>
+                <span class="kw">let</span> <span class="ident">board_node</span> <span class="op">=</span> <span class="ident">new_tree</span>
                     .<span class="ident">get</span>(<span class="ident">node_id</span>) <span class="comment">// get Node</span>
                     .<span class="ident">expect</span>(<span class="string">&quot;No node returned for node id&quot;</span>)
                     .<span class="ident">get</span>(); <span class="comment">// get BoardNode from Node</span>
                 
                 <span class="comment">// get scores of each nodes children</span>
                 <span class="kw">let</span> <span class="ident">children_scores</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">node_id</span> <span class="comment">// current node</span>
-                    .<span class="ident">children</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>)
+                    .<span class="ident">children</span>(<span class="kw-2">&amp;</span><span class="ident">new_tree</span>)
                     .<span class="ident">into_iter</span>()
                     .<span class="ident">map</span>(
-                        <span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">tree</span>
+                        <span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">new_tree</span>
                             .<span class="ident">get</span>(<span class="ident">n</span>) <span class="comment">// get Node</span>
                             .<span class="ident">expect</span>(<span class="string">&quot;No node returned for node id&quot;</span>) <span class="comment">// unwrap, should always be fine</span>
                             .<span class="ident">get</span>() <span class="comment">// get BoardNode from Node</span>
@@ -573,6 +579,7 @@
         <span class="ident">new_tree</span>
     }
 
+    <span class="doccomment">/// Get best of given scores for given team</span>
     <span class="kw">fn</span> <span class="ident">best_score</span>(<span class="ident">board</span>: <span class="kw-2">&amp;</span><span class="ident">Board</span>, <span class="ident">children_scores</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">isize</span> {
         <span class="kw">match</span> <span class="ident">board</span>.<span class="ident">current_turn</span> { <span class="comment">// MiniMax algorithm here</span>
             <span class="comment">// whether maximised or minimsed is based on current player</span>
@@ -686,6 +693,7 @@
             ).<span class="ident">collect</span>()
     }
 
+    <span class="doccomment">/// Get a new board based on the given using MiniMax to make decisions </span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_move</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">brd</span>: <span class="ident">Board</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span> {
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">Arena::new</span>();
@@ -702,7 +710,7 @@
         <span class="self">self</span>.<span class="ident">insert_board_scores</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">tree</span>, <span class="ident">lowest_nodes</span>);
 
         <span class="comment">// propagate the scores up the tree, the root node has the best score</span>
-        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">propagate_scores</span>(<span class="ident">tree</span>, <span class="ident">root_node</span>);
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">Computer::propagate_scores</span>(<span class="ident">tree</span>, <span class="ident">root_node</span>);
 
         <span class="comment">// get root node to compare</span>
         <span class="kw">let</span> <span class="ident">root_board_node</span> <span class="op">=</span> <span class="ident">tree</span>
@@ -710,22 +718,22 @@
             .<span class="ident">expect</span>(<span class="string">&quot;No node returned for node id&quot;</span>)
             .<span class="ident">get</span>(); <span class="comment">// get BoardNode from Node</span>
 
-        <span class="macro">log!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">root_board_node</span>.<span class="ident">score</span>);
-        <span class="comment">// log!(&quot;{:#?}&quot;, tree);</span>
-     
         <span class="comment">// when boards have equal scores, store for shuffling and selection</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">equal_scores</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="number">10</span>);
 
         <span class="comment">// DEBUG</span>
-        <span class="kw">let</span> <span class="ident">scores</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">root_node</span>
-            .<span class="ident">children</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>)
-            .<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">scores</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">scores</span>
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">tree</span>.<span class="ident">get</span>(<span class="ident">n</span>).<span class="ident">unwrap</span>().<span class="ident">get</span>().<span class="ident">score</span>)
-            .<span class="ident">collect</span>();
-        <span class="macro">log!</span>(<span class="string">&quot;SCORES: {:?}&quot;</span>, <span class="ident">scores</span>);
-        <span class="comment">// DEBUG</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;debug_logs&quot;</span>)]</span>
+        {
+            <span class="macro">log!</span>(<span class="string">&quot;Current root score: {}&quot;</span>, <span class="ident">root_board_node</span>.<span class="ident">score</span>);
+            <span class="kw">let</span> <span class="ident">scores</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">root_node</span>
+                .<span class="ident">children</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>)
+                .<span class="ident">collect</span>();
+            <span class="kw">let</span> <span class="ident">scores</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">scores</span>
+                .<span class="ident">into_iter</span>()
+                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">tree</span>.<span class="ident">get</span>(<span class="ident">n</span>).<span class="ident">unwrap</span>().<span class="ident">get</span>().<span class="ident">score</span>)
+                .<span class="ident">collect</span>();
+            <span class="macro">log!</span>(<span class="string">&quot;Next boards scores: {:?}&quot;</span>, <span class="ident">scores</span>);
+        }
 
         <span class="comment">// search through root node&#39;s children for the same score</span>
         <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="ident">root_node</span>.<span class="ident">children</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>) {
