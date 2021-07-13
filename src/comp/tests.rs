@@ -235,13 +235,16 @@ fn insert_scores_one_take() {
 
 #[cfg(feature = "time_ex")]
 #[wasm_bindgen_test]
-fn tree_2_depth() {
+fn tree_depth() {
 
-    let iter = 3;
-    let mut times = Vec::with_capacity(iter);
-
-    for _ in 0..iter {
-        times.push(time_tree_gen(6));
+    let depth = 1;
+    let iter = 5;
+    
+    for d in 1..8 {
+        log!("Testing depth {}", d);
+        for _ in 0..iter {
+            time_get_move(d);
+        }
     }
 }
 
@@ -255,6 +258,19 @@ fn time_tree_gen(depth: usize) {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
 
     comp.gen_tree(&mut tree, brd);
+
+    web_sys::console::time_end_with_label("tree_timer");
+}
+
+#[cfg(feature = "time_ex")]
+fn time_get_move(depth: usize) {
+    web_sys::console::time_with_label("tree_timer");
+
+    let mut comp = Computer::new(depth, White);
+ 
+    let brd = Board::init_game(Board::new(8, 8, White), 3);
+
+    comp.get_move(brd);
 
     web_sys::console::time_end_with_label("tree_timer");
 }
