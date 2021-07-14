@@ -38,6 +38,12 @@
 <span id="35">35</span>
 <span id="36">36</span>
 <span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Draught</span>
 <span class="doccomment">//! </span>
@@ -68,6 +74,12 @@
 <span class="macro">macro_rules!</span> <span class="ident">log</span> {
     ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span> )<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="ident">web_sys::console::log_1</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> )<span class="op">*</span> ).<span class="ident">into</span>());
+    }
+}
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules!</span> <span class="ident">log_error</span> {
+    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span> )<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="ident">web_sys::console::error_1</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> )<span class="op">*</span> ).<span class="ident">into</span>());
     }
 }
 
