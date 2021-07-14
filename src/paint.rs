@@ -23,8 +23,8 @@ const BLACK_SQUARE: &str = "#000000";
 
 /// Default hex colour value for outline of black squares
 const SQUARE_OUTLINE: &str = "#9c9c9c";
-/// Line width when outlining black squares
-const OUTLINE_WIDTH: f64 = 3.0;
+/// Line width when outlining black squares as proportion of min cell dimension
+const OUTLINE_WIDTH: f64 = 0.05;
 /// Whether to outline black squares
 const DRAW_OUTLINE: bool = true;
 
@@ -46,10 +46,10 @@ const SELECTED_PIECE_OUTLINE: &str = "#d1cf45";
 const KING_OUTLINE: &str = "#ffea00";
 /// Whether to outline pieces
 const DRAW_PIECE_OUTLINES: bool = true;
-/// Line width for outlining pieces
-const PIECE_OUTLINE_WIDTH: f64 = 6.0;
-/// Margin from square to define piece radius
-const PIECE_MARGIN: f64 = 14.0;
+/// Line width for outlining pieces as proportion of piece radius
+const PIECE_OUTLINE_PROPORTION: f64 = 0.25;
+/// Proportion of square that piece fills as proportion of min cell dimension
+const PIECE_PROPORTION: f64 = 0.6;
 
 /// Used to paint boards onto HTML canvases
 #[wasm_bindgen]
@@ -72,7 +72,7 @@ pub struct Painter {
     king_line: JsValue,
 
     piece_lines: bool,
-    piece_line_width: f64,
+    piece_line_proportion: f64,
 
     square_outline: JsValue,
     outline_width: f64,
@@ -168,7 +168,7 @@ impl Painter {
             selected_piece_line: JsValue::from_str(SELECTED_PIECE_OUTLINE),
             king_line: JsValue::from_str(KING_OUTLINE),
             piece_lines: DRAW_PIECE_OUTLINES,
-            piece_line_width: PIECE_OUTLINE_WIDTH,
+            piece_line_proportion: PIECE_OUTLINE_PROPORTION,
 
             square_outline: JsValue::from_str(SQUARE_OUTLINE),
             outline_width: OUTLINE_WIDTH,
@@ -201,7 +201,7 @@ impl Painter {
             selected_piece_line: JsValue::from_str(SELECTED_PIECE_OUTLINE),
             king_line: JsValue::from_str(KING_OUTLINE),
             piece_lines: DRAW_PIECE_OUTLINES,
-            piece_line_width: PIECE_OUTLINE_WIDTH,
+            piece_line_proportion: PIECE_OUTLINE_PROPORTION,
 
             square_outline: JsValue::from_str(SQUARE_OUTLINE),
             outline_width: OUTLINE_WIDTH,
@@ -254,13 +254,20 @@ impl Painter {
 
         let cell_height = self.height as usize / board.height;
         let cell_width = self.width as usize / board.width;
+        
+        let min_dimension = usize::min(cell_width, cell_height) as f64;
+
+        let cell_radius = min_dimension * PIECE_PROPORTION / 2.0;
+
+        let piece_outline = cell_radius * self.piece_line_proportion;
+        let square_outline = min_dimension * self.outline_width;
 
         self.context.set_fill_style(&self.white_square);
         self.context.fill_rect(0.0, 0.0, self.width as f64, self.height as f64);
 
         self.context.set_fill_style(&self.black_square);
         self.context.set_stroke_style(&self.square_outline);
-        self.context.set_line_width(self.outline_width);
+        self.context.set_line_width(square_outline);
 
         // Draw black squares onto canvas
         for i in 0..board.height {
@@ -336,7 +343,7 @@ impl Painter {
                     match self.context.arc(
                         center_x, 
                         center_y, 
-                        (cell_width as f64 / 2.0) - PIECE_MARGIN, // radius 
+                        cell_radius, // radius 
                         0.0, // start angle
                         f64::consts::PI * 2.0) // end angle
                     {
@@ -346,7 +353,7 @@ impl Painter {
                     self.context.fill();
 
                     if self.piece_lines {
-                        self.context.set_line_width(self.piece_line_width);
+                        self.context.set_line_width(piece_outline);
                         self.context.stroke()
                     }
 
@@ -366,7 +373,7 @@ impl Painter {
             match self.context.arc(
                 center_x, 
                 center_y, 
-                (cell_width as f64 / 2.0) - PIECE_MARGIN, // radius 
+                cell_radius, // radius 
                 0.0, // start angle
                 f64::consts::PI * 2.0) // end angle
             {
@@ -376,7 +383,7 @@ impl Painter {
             self.context.fill();
 
             if self.piece_lines {
-                self.context.set_line_width(self.piece_line_width);
+                self.context.set_line_width(piece_outline);
                 self.context.stroke()
             }
         }

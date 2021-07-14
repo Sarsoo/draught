@@ -6,7 +6,7 @@ wasm_bindgen_test_configure!(run_in_browser);
 
 // use crate::board::{Piece};
 use crate::board::enums::Strength::*;
-use crate::board::enums::Team::*;
+// use crate::board::enums::Team::*;
 
 
 #[wasm_bindgen_test]

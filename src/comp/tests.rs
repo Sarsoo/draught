@@ -4,7 +4,7 @@ use wasm_bindgen_test::*;
 
 use crate::board::Square;
 use crate::board::enums::Strength::*;
-use crate::log;
+// use crate::log;
 
 // use Team::*;
 
@@ -25,7 +25,7 @@ fn available_moves() {
     // _ . _
 
     let mut brd = Board::new(3, 2, White);
-    let comp = Computer::new(3, White);
+    let comp = Computer::new(3, White, 0.5);
 
     // log!("{}", brd);
 
@@ -50,7 +50,7 @@ fn available_moves_jumps() {
     // _ . _ .
     
     let mut brd = Board::new(4, 4, White);
-    let comp = Computer::new(3, White);
+    let comp = Computer::new(3, White, 0.5);
 
     // log!("{}", brd);
 
@@ -71,7 +71,7 @@ fn available_moves_jumps() {
 #[wasm_bindgen_test]
 fn available_moves_std_brd() {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
-    let comp = Computer::new(3, White);
+    let comp = Computer::new(3, White, 0.5);
 
     // log!("{}", brd);
 
@@ -87,7 +87,7 @@ fn available_moves_std_brd() {
 #[wasm_bindgen_test]
 fn expand_node() {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
-    let mut comp = Computer::new(3, White);
+    let mut comp = Computer::new(3, White, 0.5);
 
     // log!("{}", brd);
 
@@ -106,7 +106,7 @@ fn expand_node() {
 #[wasm_bindgen_test]
 fn expand_layer() {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
-    let mut comp = Computer::new(3, White);
+    let mut comp = Computer::new(3, White, 0.5);
 
     // log!("{}", brd);
 
@@ -123,7 +123,7 @@ fn expand_layer() {
 #[wasm_bindgen_test]
 fn leaf_nodes() {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
-    let mut comp = Computer::new(3, White);
+    let mut comp = Computer::new(3, White, 0.5);
 
     let mut tree = Arena::new(); 
     let id = tree.new_node(BoardNode::brd(brd));
@@ -160,7 +160,7 @@ fn insert_scores_all_take() {
     brd.set_cell(brd.cell_idx(BrdIdx::from(1, 4)), Square::pc(White, Man));
     brd.set_cell(brd.cell_idx(BrdIdx::from(2, 1)), Square::pc(Black, Man));
     brd.set_cell(brd.cell_idx(BrdIdx::from(2, 3)), Square::pc(Black, Man));
-    let mut comp = Computer::new(1, White);
+    let mut comp = Computer::new(1, White, 0.5);
 
     // log!("{}", brd);
 
@@ -203,7 +203,7 @@ fn insert_scores_one_take() {
     brd.set_cell(brd.cell_idx(BrdIdx::from(1, 4)), Square::pc(White, Man));
     brd.set_cell(brd.cell_idx(BrdIdx::from(2, 1)), Square::pc(Black, Man));
     // brd.set_cell(brd.cell_idx(BrdIdx::from(2, 3)), Square::pc(Black, Man));
-    let mut comp = Computer::new(1, White);
+    let mut comp = Computer::new(1, White, 0.5);
 
     // log!("{}", brd);
 

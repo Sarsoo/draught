@@ -29,6 +29,7 @@ pub struct Game {
     painter: Option<Painter>,
     search_depth: usize,
     pub last_node_count: usize,
+    pub perfect_chance: f64,
 }
 
 impl Game {
@@ -95,6 +96,7 @@ impl Game {
         self.current.cell(self.current.cell_idx(*idx))
     }
 
+    /// Set tree depth for AI to search to
     pub fn set_search_depth(&mut self, search_depth: usize) {
         self.search_depth = search_depth;
     }
@@ -112,6 +114,11 @@ impl Game {
             Some(p) => p.set_selected(&Some(*idx)),
             None => {},
         }
+    }
+
+    /// Set proportion of perfect moves from AI
+    pub fn set_perfect_chance(&mut self, new_chance: f64) {
+        self.perfect_chance = new_chance;
     }
 
     /// Clear currently selected piece
@@ -180,6 +187,7 @@ impl Game {
             painter: None,
             search_depth,
             last_node_count: 0,
+            perfect_chance: 0.5,
         }
     }
 
@@ -196,6 +204,7 @@ impl Game {
             ),
             search_depth,
             last_node_count: 0,
+            perfect_chance: 0.5,
         }
     }
 
@@ -215,14 +224,22 @@ impl Game {
     /// Create computer, get move from current board and update current board
     pub fn ai_move(&mut self) {
         
-        let mut comp = Computer::new(self.search_depth, self.current.current_turn);
+        let mut comp = Computer::new(self.search_depth, self.current.current_turn, self.perfect_chance);
+
         let new_brd = comp.get_move(self.current.clone());
 
         self.last_node_count = comp.last_node_count;
 
         match new_brd {
             Some(brd) => self.push_new_board(brd),
-            None => panic!("No AI move returned"),
+            None => {
+                log!("No possible moves, re-pushing current board");
+
+                let mut new_brd = self.current.clone();
+                new_brd.current_turn = new_brd.current_turn.opponent();
+
+                self.push_new_board(new_brd);
+            },
         }
     }
 }

@@ -1,12 +1,15 @@
 //! AI player logic
 
 use indextree::{Arena, Node, NodeId, NodeEdge};
+
+use rand::prelude::*;
 use rand::seq::SliceRandom;
 
 extern crate wasm_bindgen;
 // use wasm_bindgen::prelude::*;
 
 use crate::log;
+use crate::log_error;
 
 use crate::board::{Board, BrdIdx};
 use crate::board::enums::{MoveType, Moveable, Team};
@@ -63,13 +66,15 @@ pub struct Computer {
     pub search_depth: usize,
     pub team: Team,
     pub last_node_count: usize,
+    pub perfect_chance: f64,
 }
 
 impl Computer {
-    pub fn new(search_depth: usize, team: Team) -> Computer {
+    pub fn new(search_depth: usize, team: Team, perfect_chance: f64) -> Computer {
         Computer {
             search_depth,
             team,
+            perfect_chance,
             last_node_count: 0,
         }
     }
@@ -333,49 +338,88 @@ impl Computer {
             .expect("No node returned for node id")
             .get(); // get BoardNode from Node
 
-        // when boards have equal scores, store for shuffling and selection
-        let mut equal_scores = Vec::with_capacity(10);
+        // node ids of available next moves
+        let possible_moves: Vec<NodeId> = root_node.children(&tree).collect();
+
+        if possible_moves.len() == 0 {
+            return None;
+        }
 
         // DEBUG
         #[cfg(feature = "debug_logs")]
         {
             log!("Current root score: {}", root_board_node.score);
-            let scores: Vec<NodeId> = root_node
-                .children(&tree)
-                .collect();
-            let scores: Vec<isize> = scores
-                .into_iter()
-                .map(|n| tree.get(n).unwrap().get().score)
+            let scores: Vec<isize> = possible_moves
+                .iter()
+                .map(|n| tree.get(*n).unwrap().get().score)
                 .collect();
             log!("Next boards scores: {:?}", scores);
         }
 
-        // search through root node's children for the same score
-        for n in root_node.children(&tree) {
+        let mut rng = rand::thread_rng();
+        // random number to compare against threshold
+        let perfect_num: f64 = rng.gen();
 
-            // get each board
-            let iter_board_node = tree
-                .get(n) // get Node
-                .expect("No node returned for node id")
-                .get(); // get BoardNode from Node
+        // make perfect move
+        if perfect_num < self.perfect_chance {
+            #[cfg(feature = "debug_logs")]
+            log!("Making perfect move");
 
-            if root_board_node.score == iter_board_node.score {
-                equal_scores.push(iter_board_node);
-                // return Some(iter_board_node.board.clone());
+            // get boards of equal score that are perfect for the given player
+            let possible_perfect_moves: Vec<&BoardNode> = possible_moves
+                .iter()
+                .map(
+                    // get immutable references to BoardNodes for possible moves
+                    |n| tree
+                        .get(*n) // get Node using NodeID
+                        .expect("Unable to get perfect move data from tree node")
+                        .get() // get *BoardNode from Node
+                )
+                .filter(
+                    // filter for only scores of root node which are perfect moves
+                    |b| b.score == root_board_node.score
+                )
+                .collect();
+
+            // weird error, no child nodes have same score as root node
+            // this is odd because the root nodes score is either the max or min of it's children
+            if possible_perfect_moves.len() == 0 {
+                log_error!("No next moves matched the score of the root node, picking randomly instead");
+                
+                Some(Computer::random_choice(&tree, possible_moves, &mut rng))
             }
-        }
+            // only one possible move, use that
+            else if possible_perfect_moves.len() == 1 {
+                Some(possible_perfect_moves[0].board.clone())
+            }
+            // more than one possible perfect move to make, choose one randomly
+            else {
+                Some(
+                    possible_perfect_moves
+                        .choose(&mut rng) // random choice
+                        .unwrap() // unwrap Option
+                        .board
+                        .clone()
+                )
+            }
+        } 
+        // get random move
+        else {
+            #[cfg(feature = "debug_logs")]
+            log!("Making random move");
 
-        if equal_scores.len() == 0 {
-            None
-        } else if equal_scores.len() == 1 {
-            Some(equal_scores[0].board.clone())
-        } else {
-            Some(equal_scores
-                .choose(&mut rand::thread_rng())
-                .unwrap()
-                .board
-                .clone()
-            )
+            Some(Computer::random_choice(&tree, possible_moves, &mut rng))
         }
+    }
+
+    /// Get a random board from possible node IDs and associated tree
+    fn random_choice(tree: &Arena<BoardNode>, possible_moves: Vec<NodeId>, rng: &mut ThreadRng) -> Board {
+        let chosen_move = possible_moves.choose(rng).unwrap();
+        tree
+            .get(*chosen_move)
+            .expect("Unable to get random move data from tree node")
+            .get()
+            .board
+            .clone()
     }
 }

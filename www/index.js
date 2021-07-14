@@ -13,6 +13,7 @@ var BOARD_HEIGHT = 8;
 
 var PIECE_ROWS = 3;
 var SEARCH_DEPTH = 4;
+var PERFECT_CHANCE = 0.5;
 
 const STATUS_TIMEOUT = 3000;
 const WON_TIMEOUT = 3000;
@@ -137,7 +138,7 @@ function process_canvas_click(cell_coord) {
                 switch(status) {
                     case Moveable.Allowed:
 
-                        if (aiCheckBox.checked) {
+                        if (aiCheckBox.checked && game.has_won() === undefined) {
                             game.ai_move();
                             nodeCountText.innerText = `searched ${game.last_node_count.toLocaleString("en-GB")} possible moves`;
                         }
@@ -338,3 +339,15 @@ const onAICheck = () => {
 }
 aiCheckBox.onchange = onAICheck;
 // aiCheckBox.checked = true;
+
+const aiPerfectChance = document.getElementById("ai_difficulty");
+/**
+ * Handler for piece rows input box change, start a new game
+ */
+const onPerfectChance = () => {
+
+    PERFECT_CHANCE = parseInt(aiPerfectChance.value) / 100;
+    game.set_perfect_chance(PERFECT_CHANCE);
+}
+aiPerfectChance.onchange = onPerfectChance;
+aiPerfectChance.value = 50;
