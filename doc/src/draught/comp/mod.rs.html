@@ -1,7 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/comp/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
-<link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../draught/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;comp&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../draught/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -426,8 +424,7 @@
 <span id="423">423</span>
 <span id="424">424</span>
 <span id="425">425</span>
-</pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! AI player logic</span>
+</pre><pre class="rust"><code><span class="doccomment">//! AI player logic</span>
 
 <span class="kw">use</span> <span class="ident">indextree</span>::{<span class="ident">Arena</span>, <span class="ident">Node</span>, <span class="ident">NodeId</span>, <span class="ident">NodeEdge</span>};
 
@@ -437,12 +434,12 @@
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">wasm_bindgen</span>;
 <span class="comment">// use wasm_bindgen::prelude::*;</span>
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::log</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::log_error</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::log</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::log_error</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board</span>::{<span class="ident">Board</span>, <span class="ident">BrdIdx</span>};
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::enums</span>::{<span class="ident">MoveType</span>, <span class="ident">Moveable</span>, <span class="ident">Team</span>};
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::board::iter</span>::{<span class="ident">PieceIterator</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::board</span>::{<span class="ident">Board</span>, <span class="ident">BrdIdx</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::board::enums</span>::{<span class="ident">MoveType</span>, <span class="ident">Moveable</span>, <span class="ident">Team</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::board::iter</span>::{<span class="ident">PieceIterator</span>};
 
 <span class="kw">use</span> <span class="ident">Team</span>::<span class="kw-2">*</span>;
 <span class="comment">// use Strength::*;</span>
@@ -461,7 +458,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Move</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">from</span>: <span class="ident">BrdIdx</span>, <span class="ident">to</span>: <span class="ident">BrdIdx</span>, <span class="ident">mv_type</span>: <span class="ident">MoveType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Move</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">from</span>: <span class="ident">BrdIdx</span>, <span class="ident">to</span>: <span class="ident">BrdIdx</span>, <span class="ident">mv_type</span>: <span class="ident">MoveType</span>) -&gt; <span class="ident">Move</span> {
         <span class="ident">Move</span> {
             <span class="ident">from</span>, <span class="ident">to</span>, <span class="ident">mv_type</span>
         }
@@ -476,13 +473,13 @@
 }
 
 <span class="kw">impl</span> <span class="ident">BoardNode</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">board</span>: <span class="ident">Board</span>, <span class="ident">score</span>: <span class="ident">isize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">BoardNode</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">board</span>: <span class="ident">Board</span>, <span class="ident">score</span>: <span class="ident">isize</span>) -&gt; <span class="ident">BoardNode</span> {
         <span class="ident">BoardNode</span> {
             <span class="ident">board</span>, <span class="ident">score</span>
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">brd</span>(<span class="ident">board</span>: <span class="ident">Board</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">BoardNode</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">brd</span>(<span class="ident">board</span>: <span class="ident">Board</span>) -&gt; <span class="ident">BoardNode</span> {
         <span class="ident">BoardNode</span> {
             <span class="ident">board</span>, <span class="ident">score</span>: <span class="number">0</span>
         }
@@ -499,7 +496,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Computer</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">search_depth</span>: <span class="ident">usize</span>, <span class="ident">team</span>: <span class="ident">Team</span>, <span class="ident">perfect_chance</span>: <span class="ident">f64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Computer</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">search_depth</span>: <span class="ident">usize</span>, <span class="ident">team</span>: <span class="ident">Team</span>, <span class="ident">perfect_chance</span>: <span class="ident">f64</span>) -&gt; <span class="ident">Computer</span> {
         <span class="ident">Computer</span> {
             <span class="ident">search_depth</span>,
             <span class="ident">team</span>,
@@ -509,7 +506,7 @@
     }
 
     <span class="doccomment">/// Get vector of available moves for a given board</span>
-    <span class="kw">fn</span> <span class="ident">available_turns</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">board</span>: <span class="kw-2">&amp;</span><span class="ident">Board</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Move</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">available_turns</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">board</span>: <span class="kw-2">&amp;</span><span class="ident">Board</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Move</span><span class="op">&gt;</span> {
 
         <span class="comment">// allocate capacity for 2 moves per piece, likely too much but will be shrunk</span>
         <span class="comment">// to reduce memory re-allocations</span>
@@ -519,11 +516,11 @@
         <span class="kw">for</span> (<span class="ident">idx</span>, <span class="ident">square</span>) <span class="kw">in</span> <span class="ident">PieceIterator::new</span>(<span class="ident">board</span>) {
 
             <span class="kw">match</span> <span class="ident">square</span>.<span class="ident">occupant</span> {
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">continue</span>,
-                <span class="prelude-val">Some</span>(<span class="ident">piece</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="prelude-val">None</span> =&gt; <span class="kw">continue</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">piece</span>) =&gt; {
 
                     <span class="comment">// filter for current team&#39;s pieces</span>
-                    <span class="kw">if</span> <span class="ident">piece</span>.<span class="ident">team</span> <span class="op">=</span><span class="op">=</span> <span class="ident">board</span>.<span class="ident">current_turn</span> {
+                    <span class="kw">if</span> <span class="ident">piece</span>.<span class="ident">team</span> <span class="op">==</span> <span class="ident">board</span>.<span class="ident">current_turn</span> {
                         <span class="kw">let</span> <span class="ident">from_brd_idx</span> <span class="op">=</span> <span class="ident">board</span>.<span class="ident">board_index</span>(<span class="ident">idx</span>);
                         <span class="kw">let</span> <span class="ident">adj_op</span> <span class="op">=</span> <span class="ident">board</span>.<span class="ident">adjacent_indices</span>(<span class="ident">from_brd_idx</span>);
                         <span class="kw">let</span> <span class="ident">jump_op</span> <span class="op">=</span> <span class="ident">board</span>.<span class="ident">jumpable_indices</span>(<span class="ident">from_brd_idx</span>);
@@ -534,7 +531,7 @@
                                 <span class="kw">let</span> <span class="ident">to_brd_idx</span> <span class="op">=</span> <span class="ident">board</span>.<span class="ident">board_index</span>(<span class="ident">i</span>);
 
                                 <span class="comment">// check if can move</span>
-                                <span class="kw">if</span> <span class="ident">board</span>.<span class="ident">can_move</span>(<span class="ident">from_brd_idx</span>, <span class="ident">to_brd_idx</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">Moveable::Allowed</span> {
+                                <span class="kw">if</span> <span class="ident">board</span>.<span class="ident">can_move</span>(<span class="ident">from_brd_idx</span>, <span class="ident">to_brd_idx</span>) <span class="op">==</span> <span class="ident">Moveable::Allowed</span> {
                                     <span class="ident">moves</span>.<span class="ident">push</span>(<span class="ident">Move::new</span>(<span class="ident">from_brd_idx</span>, <span class="ident">to_brd_idx</span>, <span class="ident">MoveType::Move</span>));
                                 }
                             }
@@ -548,7 +545,7 @@
                                 <span class="kw">let</span> <span class="ident">to_brd_idx</span> <span class="op">=</span> <span class="ident">board</span>.<span class="ident">board_index</span>(<span class="ident">i</span>);
 
                                 <span class="comment">// check if can move</span>
-                                <span class="kw">if</span> <span class="ident">board</span>.<span class="ident">can_move</span>(<span class="ident">from_brd_idx</span>, <span class="ident">to_brd_idx</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">Moveable::Allowed</span> {
+                                <span class="kw">if</span> <span class="ident">board</span>.<span class="ident">can_move</span>(<span class="ident">from_brd_idx</span>, <span class="ident">to_brd_idx</span>) <span class="op">==</span> <span class="ident">Moveable::Allowed</span> {
                                     <span class="ident">moves</span>.<span class="ident">push</span>(<span class="ident">Move::new</span>(<span class="ident">from_brd_idx</span>, <span class="ident">to_brd_idx</span>, <span class="ident">MoveType::Jump</span>));
                                 }
                             }
@@ -565,7 +562,7 @@
     }
 
     <span class="doccomment">/// Generate tree of boards to given search depth, return root node</span>
-    <span class="kw">fn</span> <span class="ident">gen_tree</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">board</span>: <span class="ident">Board</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NodeId</span> {
+    <span class="kw">fn</span> <span class="ident">gen_tree</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">board</span>: <span class="ident">Board</span>) -&gt; <span class="ident">NodeId</span> {
 
         <span class="comment">// root node of tree</span>
         <span class="kw">let</span> <span class="ident">root</span> <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">new_node</span>(<span class="ident">BoardNode::brd</span>(<span class="ident">board</span>));
@@ -573,7 +570,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">nodes</span> <span class="op">=</span> <span class="macro">vec!</span>(<span class="ident">root</span>);
 
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">search_depth</span> {
-            <span class="kw">if</span> <span class="ident">nodes</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="kw">if</span> <span class="ident">nodes</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> {
                 <span class="kw">break</span>;
             }
 
@@ -584,7 +581,7 @@
     }
 
     <span class="doccomment">/// Propagate scores up the tree employing MiniMax algorithm</span>
-    <span class="kw">fn</span> <span class="ident">propagate_scores</span>(<span class="ident">tree</span>: <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">root</span>: <span class="ident">NodeId</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">propagate_scores</span>(<span class="ident">tree</span>: <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">root</span>: <span class="ident">NodeId</span>) -&gt; <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span> {
 
         <span class="comment">// need to clone tree because we iterate over it and edit it at the same time</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_tree</span> <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">clone</span>();
@@ -629,14 +626,14 @@
     }
 
     <span class="doccomment">/// Get best of given scores for given team</span>
-    <span class="kw">fn</span> <span class="ident">best_score</span>(<span class="ident">board</span>: <span class="kw-2">&amp;</span><span class="ident">Board</span>, <span class="ident">children_scores</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">isize</span> {
+    <span class="kw">fn</span> <span class="ident">best_score</span>(<span class="ident">board</span>: <span class="kw-2">&amp;</span><span class="ident">Board</span>, <span class="ident">children_scores</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span>) -&gt; <span class="ident">isize</span> {
         <span class="kw">match</span> <span class="ident">board</span>.<span class="ident">current_turn</span> { <span class="comment">// MiniMax algorithm here</span>
             <span class="comment">// whether maximised or minimsed is based on current player</span>
-            <span class="ident">White</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">children_scores</span>
+            <span class="ident">White</span> =&gt; <span class="ident">children_scores</span>
                 .<span class="ident">into_iter</span>()
                 .<span class="ident">min</span>()
                 .<span class="ident">expect</span>(<span class="string">&quot;Couldn&#39;t unwrap min score value&quot;</span>),
-            <span class="ident">Black</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">children_scores</span>
+            <span class="ident">Black</span> =&gt; <span class="ident">children_scores</span>
                 .<span class="ident">into_iter</span>()
                 .<span class="ident">max</span>()
                 .<span class="ident">expect</span>(<span class="string">&quot;Couldn&#39;t unwrap max score value&quot;</span>),
@@ -645,14 +642,14 @@
 
     <span class="doccomment">/// For given NodeIDs, insert score of board into tree</span>
     <span class="doccomment">/// Used for leaf nodes ready for propagating up tree</span>
-    <span class="kw">fn</span> <span class="ident">insert_board_scores</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">nodes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span>) {
+    <span class="kw">fn</span> <span class="ident">insert_board_scores</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">nodes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span>) {
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">nodes</span>.<span class="ident">into_iter</span>() {
             <span class="kw">match</span> <span class="ident">tree</span>.<span class="ident">get_mut</span>(<span class="ident">i</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">node</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">node</span>) =&gt; {
                     <span class="kw">let</span> <span class="ident">board_node</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">get_mut</span>();
                     <span class="ident">board_node</span>.<span class="ident">score</span> <span class="op">=</span> <span class="ident">board_node</span>.<span class="ident">board</span>.<span class="ident">score</span>();
                 },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="prelude-val">None</span> =&gt; {
                     <span class="macro">panic!</span>(<span class="string">&quot;Failed to get node when inserting board scores&quot;</span>);
                 }
             }
@@ -660,7 +657,7 @@
     }
 
     <span class="doccomment">/// Traverse tree from given root ID and get NodeIDs of leaf nodes (those without children)</span>
-    <span class="kw">fn</span> <span class="ident">get_leaf_nodes</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">root</span>: <span class="ident">NodeId</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_leaf_nodes</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">root</span>: <span class="ident">NodeId</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">leaves</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="self">self</span>.<span class="ident">search_depth</span> <span class="op">*</span> <span class="number">30</span>);
 
@@ -671,7 +668,7 @@
 
                 <span class="kw">let</span> <span class="ident">children</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">node_id</span>.<span class="ident">children</span>(<span class="ident">tree</span>).<span class="ident">collect</span>();
 
-                <span class="kw">if</span> <span class="ident">children</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">children</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> {
                     <span class="ident">leaves</span>.<span class="ident">push</span>(<span class="ident">node_id</span>);
                 }
             }
@@ -681,7 +678,7 @@
     }
 
     <span class="doccomment">/// Expand all given nodes and return newly inserted layer of nodes</span>
-    <span class="kw">fn</span> <span class="ident">expand_layer</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">nodes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">expand_layer</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">nodes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
 
         <span class="ident">nodes</span>
             .<span class="ident">into_iter</span>().<span class="ident">map</span>(
@@ -691,11 +688,11 @@
     }
 
     <span class="doccomment">/// Insert all possible next boards as children of given board node</span>
-    <span class="kw">fn</span> <span class="ident">expand_node</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">node</span>: <span class="ident">NodeId</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">expand_node</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">node</span>: <span class="ident">NodeId</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">node_board</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Node</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">get</span>(<span class="ident">node</span>);
         
         <span class="kw">match</span> <span class="ident">node_board</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">node_ref</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">node_ref</span>) =&gt; {
 
                 <span class="kw">let</span> <span class="ident">board</span>: <span class="kw-2">&amp;</span><span class="ident">BoardNode</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">node_ref</span>.<span class="ident">get</span>();
 
@@ -709,14 +706,14 @@
                 
                 <span class="kw">return</span> <span class="ident">ids</span>;
             },
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">None</span> =&gt; {
                 <span class="macro">panic!</span>(<span class="string">&quot;No board retrieved from tree, node: {:?}&quot;</span>, <span class="ident">node</span>);
             },
         }
     }
 
     <span class="doccomment">/// Insert given boards into tree</span>
-    <span class="kw">fn</span> <span class="ident">insert_boards</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">boards</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">insert_boards</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">boards</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> {
         
         <span class="ident">boards</span>
             .<span class="ident">into_iter</span>().<span class="ident">map</span>(
@@ -725,16 +722,16 @@
     }
 
     <span class="doccomment">/// Get all possible next boards from given board</span>
-    <span class="kw">fn</span> <span class="ident">get_move_boards</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">board</span>: <span class="kw-2">&amp;</span><span class="ident">BoardNode</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_move_boards</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">board</span>: <span class="kw-2">&amp;</span><span class="ident">BoardNode</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span> {
 
         <span class="self">self</span>.<span class="ident">available_turns</span>(<span class="kw-2">&amp;</span><span class="ident">board</span>.<span class="ident">board</span>)
             .<span class="ident">into_iter</span>().<span class="ident">map</span>(
                 <span class="op">|</span><span class="ident">m</span><span class="op">|</span> {
                     <span class="kw">match</span> <span class="ident">m</span>.<span class="ident">mv_type</span> {
-                        <span class="ident">MoveType::Move</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">BoardNode::brd</span>(
+                        <span class="ident">MoveType::Move</span> =&gt; <span class="ident">BoardNode::brd</span>(
                             <span class="ident">board</span>.<span class="ident">board</span>.<span class="ident">apply_move</span>(<span class="ident">m</span>.<span class="ident">from</span>, <span class="ident">m</span>.<span class="ident">to</span>)
                         ),
-                        <span class="ident">MoveType::Jump</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">BoardNode::brd</span>(
+                        <span class="ident">MoveType::Jump</span> =&gt; <span class="ident">BoardNode::brd</span>(
                             <span class="ident">board</span>.<span class="ident">board</span>.<span class="ident">apply_jump</span>(<span class="ident">m</span>.<span class="ident">from</span>, <span class="ident">m</span>.<span class="ident">to</span>)
                         ),
                     }
@@ -743,20 +740,20 @@
     }
 
     <span class="doccomment">/// Get a new board based on the given using MiniMax to make decisions </span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_move</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">brd</span>: <span class="ident">Board</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_move</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">brd</span>: <span class="ident">Board</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Board</span><span class="op">&gt;</span> {
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">Arena::new</span>();
 
         <span class="comment">// generate a tree to given depth for the given board</span>
-        <span class="kw">let</span> <span class="ident">root_node</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">gen_tree</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">tree</span>, <span class="ident">brd</span>);
+        <span class="kw">let</span> <span class="ident">root_node</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">gen_tree</span>(<span class="kw-2">&amp;mut</span> <span class="ident">tree</span>, <span class="ident">brd</span>);
 
         <span class="self">self</span>.<span class="ident">last_node_count</span> <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">count</span>() <span class="op">-</span> <span class="number">1</span>;
 
         <span class="comment">// get the leaf nodes to insert the board scores with</span>
-        <span class="kw">let</span> <span class="ident">lowest_nodes</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_leaf_nodes</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">tree</span>, <span class="ident">root_node</span>);
+        <span class="kw">let</span> <span class="ident">lowest_nodes</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_leaf_nodes</span>(<span class="kw-2">&amp;mut</span> <span class="ident">tree</span>, <span class="ident">root_node</span>);
 
         <span class="comment">// insert the board scores for the leaf nodes</span>
-        <span class="self">self</span>.<span class="ident">insert_board_scores</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">tree</span>, <span class="ident">lowest_nodes</span>);
+        <span class="self">self</span>.<span class="ident">insert_board_scores</span>(<span class="kw-2">&amp;mut</span> <span class="ident">tree</span>, <span class="ident">lowest_nodes</span>);
 
         <span class="comment">// propagate the scores up the tree, the root node has the best score</span>
         <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">Computer::propagate_scores</span>(<span class="ident">tree</span>, <span class="ident">root_node</span>);
@@ -770,7 +767,7 @@
         <span class="comment">// node ids of available next moves</span>
         <span class="kw">let</span> <span class="ident">possible_moves</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">root_node</span>.<span class="ident">children</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>).<span class="ident">collect</span>();
 
-        <span class="kw">if</span> <span class="ident">possible_moves</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">possible_moves</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
 
@@ -806,26 +803,26 @@
                 )
                 .<span class="ident">filter</span>(
                     <span class="comment">// filter for only scores of root node which are perfect moves</span>
-                    <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">score</span> <span class="op">=</span><span class="op">=</span> <span class="ident">root_board_node</span>.<span class="ident">score</span>
+                    <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">score</span> <span class="op">==</span> <span class="ident">root_board_node</span>.<span class="ident">score</span>
                 )
                 .<span class="ident">collect</span>();
 
             <span class="comment">// weird error, no child nodes have same score as root node</span>
             <span class="comment">// this is odd because the root nodes score is either the max or min of it&#39;s children</span>
-            <span class="kw">if</span> <span class="ident">possible_perfect_moves</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="kw">if</span> <span class="ident">possible_perfect_moves</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> {
                 <span class="macro">log_error!</span>(<span class="string">&quot;No next moves matched the score of the root node, picking randomly instead&quot;</span>);
                 
-                <span class="prelude-val">Some</span>(<span class="ident">Computer::random_choice</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>, <span class="ident">possible_moves</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>))
+                <span class="prelude-val">Some</span>(<span class="ident">Computer::random_choice</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>, <span class="ident">possible_moves</span>, <span class="kw-2">&amp;mut</span> <span class="ident">rng</span>))
             }
             <span class="comment">// only one possible move, use that</span>
-            <span class="kw">else</span> <span class="kw">if</span> <span class="ident">possible_perfect_moves</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+            <span class="kw">else</span> <span class="kw">if</span> <span class="ident">possible_perfect_moves</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">possible_perfect_moves</span>[<span class="number">0</span>].<span class="ident">board</span>.<span class="ident">clone</span>())
             }
             <span class="comment">// more than one possible perfect move to make, choose one randomly</span>
             <span class="kw">else</span> {
                 <span class="prelude-val">Some</span>(
                     <span class="ident">possible_perfect_moves</span>
-                        .<span class="ident">choose</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>) <span class="comment">// random choice</span>
+                        .<span class="ident">choose</span>(<span class="kw-2">&amp;mut</span> <span class="ident">rng</span>) <span class="comment">// random choice</span>
                         .<span class="ident">unwrap</span>() <span class="comment">// unwrap Option</span>
                         .<span class="ident">board</span>
                         .<span class="ident">clone</span>()
@@ -837,12 +834,12 @@
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;debug_logs&quot;</span>)]</span>
             <span class="macro">log!</span>(<span class="string">&quot;Making random move&quot;</span>);
 
-            <span class="prelude-val">Some</span>(<span class="ident">Computer::random_choice</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>, <span class="ident">possible_moves</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>))
+            <span class="prelude-val">Some</span>(<span class="ident">Computer::random_choice</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>, <span class="ident">possible_moves</span>, <span class="kw-2">&amp;mut</span> <span class="ident">rng</span>))
         }
     }
 
     <span class="doccomment">/// Get a random board from possible node IDs and associated tree</span>
-    <span class="kw">fn</span> <span class="ident">random_choice</span>(<span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">possible_moves</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ThreadRng</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Board</span> {
+    <span class="kw">fn</span> <span class="ident">random_choice</span>(<span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="ident">Arena</span><span class="op">&lt;</span><span class="ident">BoardNode</span><span class="op">&gt;</span>, <span class="ident">possible_moves</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ThreadRng</span>) -&gt; <span class="ident">Board</span> {
         <span class="kw">let</span> <span class="ident">chosen_move</span> <span class="op">=</span> <span class="ident">possible_moves</span>.<span class="ident">choose</span>(<span class="ident">rng</span>).<span class="ident">unwrap</span>();
         <span class="ident">tree</span>
             .<span class="ident">get</span>(<span class="kw-2">*</span><span class="ident">chosen_move</span>)
@@ -851,6 +848,6 @@
             .<span class="ident">board</span>
             .<span class="ident">clone</span>()
     }
-}</pre></div>
+}</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="draught" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
+</body></html>
