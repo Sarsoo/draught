@@ -27,7 +27,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Install Node Modules
         run: npm ci
@@ -42,6 +42,9 @@ jobs:
 
       - name: Move Docs to Staging Directory
         run: mv target/doc www/dist/
+
+      - name: Move CNAME file to Staging Directory
+        run: mv docs/CNAME www/dist
 
       - name: Deploy To Pages
         uses: peaceiris/actions-gh-pages@v3

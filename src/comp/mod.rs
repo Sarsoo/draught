@@ -316,6 +316,9 @@ impl Computer {
     /// Get a new board based on the given using MiniMax to make decisions 
     pub fn get_move(&mut self, brd: Board) -> Option<Board> {
 
+        #[allow(unused_assignments)]
+        let mut ret: Option<Board> = None;
+
         let mut tree = Arena::new();
 
         // generate a tree to given depth for the given board
@@ -386,21 +389,21 @@ impl Computer {
             if possible_perfect_moves.len() == 0 {
                 log_error!("No next moves matched the score of the root node, picking randomly instead");
                 
-                Some(Computer::random_choice(&tree, possible_moves, &mut rng))
+                ret = Some(Computer::random_choice(&tree, possible_moves, &mut rng));
             }
             // only one possible move, use that
             else if possible_perfect_moves.len() == 1 {
-                Some(possible_perfect_moves[0].board.clone())
+                ret = Some(possible_perfect_moves[0].board.clone());
             }
             // more than one possible perfect move to make, choose one randomly
             else {
-                Some(
+                ret = Some(
                     possible_perfect_moves
                         .choose(&mut rng) // random choice
                         .unwrap() // unwrap Option
                         .board
                         .clone()
-                )
+                );
             }
         } 
         // get random move
@@ -408,8 +411,10 @@ impl Computer {
             #[cfg(feature = "debug_logs")]
             log!("Making random move");
 
-            Some(Computer::random_choice(&tree, possible_moves, &mut rng))
+            ret = Some(Computer::random_choice(&tree, possible_moves, &mut rng));
         }
+
+        ret
     }
 
     /// Get a random board from possible node IDs and associated tree

@@ -139,8 +139,14 @@ function process_canvas_click(cell_coord) {
                     case Moveable.Allowed:
 
                         if (aiCheckBox.checked && game.has_won() === undefined) {
+
+                            let start = performance.now();
+
                             game.ai_move();
-                            nodeCountText.innerText = `searched ${game.last_node_count.toLocaleString("en-GB")} possible moves`;
+
+                            let end = performance.now();
+
+                            nodeCountText.innerText = `searched ${game.last_node_count.toLocaleString("en-GB")} possible moves in ${(end - start).toLocaleString()}ms`;
                         }
 
                         break;
