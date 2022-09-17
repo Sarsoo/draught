@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["PieceIterator",""],["RowIndexIterator",""],["RowSquareIterator",""]]});
+window.SIDEBAR_ITEMS = {"struct":[["PieceIterator",""],["RowIndexIterator",""],["RowSquareIterator",""]]};

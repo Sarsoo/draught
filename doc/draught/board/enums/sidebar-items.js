@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["MoveType","Move/Jump, for use in Move"],["Moveable","Possible outcomes of trying to move"],["SquareState","Model board square as Empty/Occupied/Unplayable"],["Strength","Man/King"],["Team","Black/White"]]});
+window.SIDEBAR_ITEMS = {"enum":[["MoveType","Move/Jump, for use in Move"],["Moveable","Possible outcomes of trying to move"],["SquareState","Model board square as Empty/Occupied/Unplayable"],["Strength","Man/King"],["Team","Black/White"]]};
