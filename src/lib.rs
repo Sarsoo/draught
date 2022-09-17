@@ -16,12 +16,6 @@ pub use game::Game;
 pub use comp::Computer;
 pub use paint::Painter;
 
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 /// Wrap the [`web_sys`] access to the browser console in a macro for easy logging
 #[macro_export]
 macro_rules! log {
