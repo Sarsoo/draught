@@ -5,6 +5,7 @@ RUN  curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 COPY . ./
 
 RUN wasm-pack build --release
+RUN ls
 RUN cargo doc --no-deps --document-private-items
 
 FROM node:18 AS js-build
