@@ -6,7 +6,6 @@ COPY . /draught
 WORKDIR /draught
 
 RUN wasm-pack build --release
-RUN ls
 RUN cargo doc --no-deps --document-private-items
 
 FROM node:18 AS js-build
