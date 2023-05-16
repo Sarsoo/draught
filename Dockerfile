@@ -1,6 +1,6 @@
-FROM rust:1.69-alpine AS rust-build
+FROM rust:1.69 AS rust-build
 
-RUN  curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
 COPY . /draught
 WORKDIR /draught
