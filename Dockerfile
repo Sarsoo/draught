@@ -1,4 +1,4 @@
-FROM rust:1.69 AS rust-build
+FROM rust:1.71 AS rust-build
 
 RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
@@ -8,7 +8,7 @@ WORKDIR /draught
 RUN wasm-pack build --release
 RUN cargo doc --no-deps --document-private-items
 
-FROM node:18-alpine AS js-build
+FROM node:20-alpine AS js-build
 
 COPY . /draught
 WORKDIR /draught
