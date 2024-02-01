@@ -65,7 +65,8 @@ jobs:
 
   package:
     runs-on: ubuntu-latest
-    needs: [build] # for ignoring bad builds
+    name: Package Container
+    needs: [build-web] # for ignoring bad builds
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v3
