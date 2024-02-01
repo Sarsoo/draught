@@ -1,54 +1,8 @@
-[package]
-name = "draught"
-version = "1.0.1"
-authors = ["aj <andrewjpack@gmail.com>"]
-edition = "2018"
-repository = "https://github.com/Sarsoo/draught"
+[workspace]
+resolver = "2"
 
-[lib]
-crate-type = ["cdylib", "rlib"]
-
-[features]
-default = ["console_error_panic_hook"]
-debug_logs = [] # log extra stuff to the web console
-time_ex = [] # allow time profiling in computer
-
-[dependencies]
-wasm-bindgen = "0.2.87"
-indextree = "4.6.0"
-
-rand = {version = "0.8.5"}
-getrandom = {version = "*", features = ["js"]}
-
-# rand = {version = "0.8"}
-# getrandom = { version = "0.2", features = ["js"] }
-
-
-# The `console_error_panic_hook` crate provides better debugging of panics by
-# logging them with `console.error`. This is great for development, but requires
-# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
-# code size when deploying.
-console_error_panic_hook = { version = "0.1.7", optional = true }
-
-[dependencies.web-sys]
-version = "0.3.45"
-features = [
-  "console",
-
-  'CanvasRenderingContext2d',
-  'Document',
-  'Element',
-  'HtmlCanvasElement',
-  'Window',
+members = [
+    "draught",
+    "draughtlib",
+    "draught_web",
 ]
-
-[dev-dependencies]
-wasm-bindgen-test = "0.3.37"
-
-[profile.release]
-# Tell `rustc` to optimize for small code size.
-opt-level = "s"
-
-# [package.metadata.wasm-pack.profile.release]
-# wasm-opt = false
-

@@ -5,11 +5,12 @@ use indextree::{Arena, Node, NodeId, NodeEdge};
 use rand::prelude::*;
 use rand::seq::SliceRandom;
 
+#[cfg(target_arch = "wasm32")]
 extern crate wasm_bindgen;
 // use wasm_bindgen::prelude::*;
 
-use crate::log;
-use crate::log_error;
+// use draught_web::log;
+// use draught_web::log_error;
 
 use crate::board::{Board, BrdIdx};
 use crate::board::enums::{MoveType, Moveable, Team};
@@ -387,7 +388,7 @@ impl Computer {
             // weird error, no child nodes have same score as root node
             // this is odd because the root nodes score is either the max or min of it's children
             if possible_perfect_moves.len() == 0 {
-                log_error!("No next moves matched the score of the root node, picking randomly instead");
+                // log_error!("No next moves matched the score of the root node, picking randomly instead");
                 
                 ret = Some(Computer::random_choice(&tree, possible_moves, &mut rng));
             }

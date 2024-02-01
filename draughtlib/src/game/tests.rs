@@ -1,7 +1,9 @@
 use super::*;
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen_test::*;
 // use crate::log;
 
+#[cfg(target_arch = "wasm32")]
 wasm_bindgen_test_configure!(run_in_browser);
 
 // use crate::board::{Piece};
@@ -9,7 +11,8 @@ use crate::board::enums::Strength::*;
 // use crate::board::enums::Team::*;
 
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn make_move() {
     let mut game = Game::new(8, 8, 3, Black, 3);
     // log!("{}", game);
@@ -37,7 +40,8 @@ fn make_move() {
     // log!("{}", game.previous_board(0));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn make_jump() {
     let mut game = Game::new(8, 8, 3, Black, 3);
     // log!("{}", game);

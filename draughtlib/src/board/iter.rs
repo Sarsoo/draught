@@ -105,13 +105,16 @@ pub mod tests {
     use super::*;
     use crate::board::enums::SquareState;
     use crate::board::Piece;
+    #[cfg(target_arch = "wasm32")]
     use wasm_bindgen_test::*;
 
     // use crate::log;
 
+    #[cfg(target_arch = "wasm32")]
     wasm_bindgen_test_configure!(run_in_browser);
 
-    #[wasm_bindgen_test]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
     fn index_iterator() {
         let board = Board::new(2, 2, Team::Black);
         let iter = RowIndexIterator::new(&board);
@@ -122,7 +125,8 @@ pub mod tests {
         ], collected);
     }
 
-    #[wasm_bindgen_test]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
     fn square_iterator() {
         let board = Board::new(2, 2, Team::Black);
         let iter = RowSquareIterator::new(&board);
@@ -139,7 +143,8 @@ pub mod tests {
         ], collected);
     }
 
-    #[wasm_bindgen_test]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
     fn piece_iterator_one_piece() {
         let idx = 2;
 
@@ -158,7 +163,8 @@ pub mod tests {
         assert_eq!(collected[0], (idx, board.cell(idx)));
     }
 
-    #[wasm_bindgen_test]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
     fn piece_iterator_multiple_pieces() {
 
         let mut board = Board::new(4, 4, Team::Black);

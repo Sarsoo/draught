@@ -14,9 +14,11 @@ use iter::*;
 use std::fmt::{Display, Write};
 use std::option::Option;
 
-use crate::log;
+// use draught_web::log;
 
+#[cfg(target_arch = "wasm32")]
 extern crate wasm_bindgen;
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
 /// Standard width of a checkers board is 8 squares
@@ -25,16 +27,16 @@ pub const STD_WIDTH: usize = 8;
 pub const STD_HEIGHT: usize = 8;
 
 /// Game piece given by its team and strength (normal or kinged)
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Piece {
     pub team: Team,
     pub strength: Strength
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl Piece {
-    #[wasm_bindgen(constructor)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(constructor))]
     pub fn new(team: Team, strength: Strength) -> Piece {
         Piece {
             team, strength
@@ -72,7 +74,7 @@ impl<T: Clone + Copy> Direction<T> {
 }
 
 /// Board squares given by a state and a possible occupying game piece
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Square {
     /// Game piece if square is occupied
@@ -81,10 +83,10 @@ pub struct Square {
     pub state: SquareState
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl Square {
     /// Standard constructor function to form square from state and occupant
-    #[wasm_bindgen(constructor)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(constructor))]
     pub fn new(state: SquareState, occupant: Option<Piece>) -> Square{
         Square {
             occupant,
@@ -118,16 +120,16 @@ impl Square {
 }
 
 /// Rank 2 tensor index to identify a board square by row and column
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct BrdIdx {
     pub row: usize,
     pub col: usize
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl BrdIdx {
-    #[wasm_bindgen(constructor)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(constructor))]
     pub fn from(row: usize, col: usize) -> BrdIdx {
         BrdIdx{
             row, col
@@ -150,7 +152,7 @@ impl Display for BrdIdx {
 ///////////////
 
 /// Single state of a checkers board
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Board {
     /// 1D backing array of board squares for the 2D game board
@@ -386,7 +388,7 @@ impl Board {
 //  BOUND FUNCS
 ///////////////////
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl Board {
     /// Get a copy of a board square by 1D array index
     pub fn cell(&self, idx: usize) -> Square {
@@ -731,7 +733,7 @@ impl Board {
 //   BOUND TYPE FUNCS
 /////////////////////////
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl Board {
     /// Unwrap the jumpee piece from the square and [`Board::check_jumpee_team`] with [`Moveable`] response
     pub fn validate_jumpee(jumpee: Square, from_occ: Piece) -> Moveable {
@@ -771,7 +773,7 @@ impl Board {
     }
 
     /// Initialise a game board without game pieces
-    #[wasm_bindgen(constructor)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(constructor))]
     pub fn new(width: usize, height: usize, current_turn: Team) -> Board {
         let total_cells = width * height;
 
@@ -826,7 +828,7 @@ impl Board {
 }
 
 impl Display for Board {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let mut string = String::new();
 
         for i in 0..self.height {
@@ -839,7 +841,7 @@ impl Display for Board {
                     Unplayable => write!(string, ". "),
                 };
                 if let Err(err) = result {
-                    log!("Error printing cell state, ({}, {}), {}", i, j, err);
+                    // log!("Error printing cell state, ({}, {}), {}", i, j, err);
                 }
             }
             string.push('\n');

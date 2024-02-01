@@ -1,7 +1,9 @@
 use super::*;
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen_test::*;
 // use crate::log;
 
+#[cfg(target_arch = "wasm32")]
 wasm_bindgen_test_configure!(run_in_browser);
 
 
@@ -11,19 +13,22 @@ wasm_bindgen_test_configure!(run_in_browser);
 //     log!("{}", board);
 // }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn create() {
     let _ = Board::new(STD_WIDTH, STD_HEIGHT, Black);
     assert!(true);
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn std_num_cells() {
     let board = Board::new(8, 8, Black);
     assert_eq!(64, board.num_cells());
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn idx_diffs() {
     let from = BrdIdx::from(1, 1);
     let to = BrdIdx::from(2, 2);
@@ -38,7 +43,8 @@ fn idx_diffs() {
     assert_eq!(Board::idx_diffs(from, to), (-5, 10));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn set_cell() {
     let idx = 1;
 
@@ -53,25 +59,28 @@ fn set_cell() {
 // INDEXING
 //////////////
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn cell_index_top_left() {
     let board = Board::new(8, 8, Black);
     assert_eq!(0, board.cell_index(0, 0));
 }
-
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn cell_index_central() {
     let board = Board::new(8, 8, Black);
     assert_eq!(9, board.cell_index(1, 1));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn cell_index_central_2() {
     let board = Board::new(8, 8, Black);
     assert_eq!(17, board.cell_index(2, 1));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn board_index() {
     let board = Board::new(8, 8, Black);
 
@@ -87,13 +96,15 @@ fn board_index() {
 // SQUARE STATE
 ///////////////////
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn first_square_unplayable() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Unplayable, board.cell_state(board.cell_index(0, 0)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn first_square_row_5_unplayable() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Empty, board.cell_state(board.cell_index(5, 0)));
@@ -103,7 +114,8 @@ fn first_square_row_5_unplayable() {
 // DIAGNOAL INDICES
 //////////////////////
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn moveable_indices_unplayable() {
     let board = Board::new(8, 8, Black);
     assert_eq!(None, board.adjacent_indices(BrdIdx::from(7, 7)));
@@ -111,43 +123,50 @@ fn moveable_indices_unplayable() {
     assert_eq!(None, board.adjacent_indices(BrdIdx::from(1, 1)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn moveable_indices_central() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![1, 3, 17, 19]), board.adjacent_indices(BrdIdx::from(1, 2)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn moveable_indices_top_row() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![8, 10]), board.adjacent_indices(BrdIdx::from(0, 1)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn moveable_indices_left_column() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![1, 17]), board.adjacent_indices(BrdIdx::from(1, 0)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn moveable_indices_bottom_row() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![49, 51]), board.adjacent_indices(BrdIdx::from(7, 2)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn moveable_indices_right_column() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![14, 30]), board.adjacent_indices(BrdIdx::from(2, 7)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn moveable_indices_top_right() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![14]), board.adjacent_indices(BrdIdx::from(0, 7)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn moveable_indices_bottom_left() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![49]), board.adjacent_indices(BrdIdx::from(7, 0)));
@@ -157,7 +176,8 @@ fn moveable_indices_bottom_left() {
 // JUMPABLE INDICES
 //////////////////////
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn jumpable_indices_unplayable() {
     let board = Board::new(8, 8, Black);
     assert_eq!(None, board.jumpable_indices(BrdIdx::from(7, 7)));
@@ -165,61 +185,71 @@ fn jumpable_indices_unplayable() {
     assert_eq!(None, board.jumpable_indices(BrdIdx::from(1, 1)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn jumpable_indices() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![24, 28]), board.jumpable_indices(BrdIdx::from(1, 2)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn jumpable_indices_central() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![10, 14, 42, 46]), board.jumpable_indices(BrdIdx::from(3, 4)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn jumpable_indices_top_row() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![19]), board.jumpable_indices(BrdIdx::from(0, 1)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn jumpable_indices_left_column() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![26]), board.jumpable_indices(BrdIdx::from(1, 0)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn jumpable_indices_bottom_row() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![40, 44]), board.jumpable_indices(BrdIdx::from(7, 2)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn jumpable_indices_right_column() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![5, 37]), board.jumpable_indices(BrdIdx::from(2, 7)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn jumpable_indices_top_right() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![21]), board.jumpable_indices(BrdIdx::from(0, 7)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn jumpable_indices_bottom_left() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![42]), board.jumpable_indices(BrdIdx::from(7, 0)));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn black_adjacent_indices() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![1, 3]), board.player_adjacent_indices(BrdIdx::from(1, 2), Black));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn white_adjacent_indices() {
     let board = Board::new(8, 8, Black);
     assert_eq!(Some(vec![17, 19]), board.player_adjacent_indices(BrdIdx::from(1, 2), White));
@@ -228,8 +258,9 @@ fn white_adjacent_indices() {
 ////////////////
 //   JUMPEE
 ////////////////
- 
-#[wasm_bindgen_test]
+
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn check_jumpee_opposing_teams() {
     let from = Piece::new(Black, Man); 
     let jumpee = Piece::new(White, Man); 
@@ -240,7 +271,8 @@ fn check_jumpee_opposing_teams() {
     assert_eq!(Board::check_jumpee_team(from, jumpee), true);
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn check_jumpee_same_teams() {
     let from = Piece::new(Black, Man); 
     let jumpee = Piece::new(Black, Man); 
@@ -251,7 +283,8 @@ fn check_jumpee_same_teams() {
     assert_eq!(Board::check_jumpee_team(from, jumpee), false);
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn check_validate_jumpee_opposing_teams() {
     let jumpee_square = Square::pc(White, Man);
     let from_piece = Piece::new(Black, Man);
@@ -264,7 +297,8 @@ fn check_validate_jumpee_opposing_teams() {
     assert_eq!(Board::validate_jumpee(jumpee_square, from_piece), Moveable::Allowed);
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn check_validate_jumpee_same_teams() {
     let jumpee_square = Square::pc(White, Man);
     let from_piece = Piece::new(White, Man);
@@ -281,7 +315,8 @@ fn check_validate_jumpee_same_teams() {
 //    SCORE
 /////////////////
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn score() {
     //////////////////////////////////
     let board = Board::new(8, 8, Black);    
@@ -310,7 +345,8 @@ fn score() {
 //  MOVE VALIDATION
 ///////////////////////
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn validate_man_move_team_directions() {
     // WHITE NEEDS INCREASING IDX
 
@@ -347,7 +383,8 @@ fn validate_man_move_team_directions() {
     assert_eq!(Moveable::IllegalTrajectory, board.validate_man_move(from, to, piece));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn validate_man_move_weird_trajectories() {
     // WHITE NEEDS INCREASING IDX
 
@@ -384,7 +421,8 @@ fn validate_man_move_weird_trajectories() {
     assert_eq!(Moveable::IllegalTrajectory, board.validate_man_move(from, to, piece));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn can_move() {
     // WHITE NEEDS INCREASING IDX
 
@@ -444,7 +482,8 @@ fn can_move() {
 
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn can_move_jump() {
     // WHITE NEEDS INCREASING IDX
 

@@ -1,5 +1,6 @@
 use super::*;
 // use wasm_bindgen::prelude::*;
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen_test::*;
 
 use crate::board::Square;
@@ -8,6 +9,7 @@ use crate::board::enums::Strength::*;
 
 // use Team::*;
 
+#[cfg(target_arch = "wasm32")]
 wasm_bindgen_test_configure!(run_in_browser);
 
 // #[wasm_bindgen_test]
@@ -19,7 +21,8 @@ wasm_bindgen_test_configure!(run_in_browser);
 //     assert_eq!(comp.tree.count(), 1);
 // }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn available_moves() {
     // . W . 
     // _ . _
@@ -42,7 +45,8 @@ fn available_moves() {
     assert!(moves.into_iter().all(|m| m.mv_type == MoveType::Move));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn available_moves_jumps() {
     // . W . _ 
     // _ . B . 
@@ -68,7 +72,8 @@ fn available_moves_jumps() {
     assert!(moves[1].mv_type == MoveType::Jump);
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn available_moves_std_brd() {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
     let comp = Computer::new(3, White, 0.5);
@@ -84,7 +89,8 @@ fn available_moves_std_brd() {
     assert!(moves.into_iter().all(|m| m.mv_type == MoveType::Move));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn expand_node() {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
     let mut comp = Computer::new(3, White, 0.5);
@@ -103,7 +109,8 @@ fn expand_node() {
     assert_eq!(children.len(), 7);
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn expand_layer() {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
     let mut comp = Computer::new(3, White, 0.5);
@@ -120,7 +127,8 @@ fn expand_layer() {
     assert_eq!(tree.count(), 49 + 7 + 1);
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn leaf_nodes() {
     let brd = Board::init_game(Board::new(8, 8, White), 3);
     let mut comp = Computer::new(3, White, 0.5);
@@ -136,7 +144,8 @@ fn leaf_nodes() {
     assert_eq!(comp.get_leaf_nodes(&mut tree, id).len(), moves.len() + moves2.len() - 1);
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn best_scores() {
     let brd = Board::new(1, 1, White);
     assert_eq!(Computer::best_score(&brd, vec!(-5, -1, 2, 3, 4)), -5);
@@ -145,7 +154,8 @@ fn best_scores() {
     assert_eq!(Computer::best_score(&brd, vec!(-1, 2, 3, 4)), 4);
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn insert_scores_all_take() {
     // . _ . _ . 
     // W . W . W 
@@ -188,7 +198,8 @@ fn insert_scores_all_take() {
     assert_eq!(children_scores, vec!(-3, -3, -3, -3));
 }
 
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn insert_scores_one_take() {
     // . _ . _ . 
     // W . _ . W 
@@ -234,7 +245,8 @@ fn insert_scores_one_take() {
 }
 
 #[cfg(feature = "time_ex")]
-#[wasm_bindgen_test]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+#[cfg_attr(not(target_arch = "wasm32"), test)]
 fn tree_depth() {
 
     let depth = 1;
@@ -275,7 +287,7 @@ fn time_get_move(depth: usize) {
     web_sys::console::time_end_with_label("tree_timer");
 }
 
-// #[wasm_bindgen_test]
+// #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 // fn tree_get_move() {
 //     let mut brd = Board::new(5, 4, White);
 //     brd.set_cell(brd.cell_idx(BrdIdx::from(1, 2)), Square::pc(White, Man));
@@ -290,7 +302,7 @@ fn time_get_move(depth: usize) {
 //     // log!("{:?}", comp.get_move(brd).unwrap());
 // }
 
-// #[wasm_bindgen_test]
+// #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 // fn tree_get_move() {
 //     let mut brd = Board::new(5, 5, White);
 //     brd.set_cell(brd.cell_idx(BrdIdx::from(1, 2)), Square::pc(White, Man));

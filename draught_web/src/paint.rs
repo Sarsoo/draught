@@ -10,11 +10,12 @@ use web_sys::CanvasRenderingContext2d;
 use std::f64;
 
 use crate::log;
-use crate::board::{Board, BrdIdx};
-use crate::board::iter::PieceIterator;
+use draughtlib::board::{Board, BrdIdx};
+use draughtlib::board::iter::PieceIterator;
 
-use crate::board::enums::Team::*;
-use crate::board::enums::Strength::*;
+use draughtlib::board::enums::Team::*;
+use draughtlib::board::enums::Strength::*;
+use draughtlib::game::Game;
 
 /// Default hex colour value for white square background
 const WHITE_SQUARE: &str = "#FFFFFF";
@@ -83,11 +84,6 @@ pub struct Painter {
 }
 
 impl Painter {
-    /// Set selected piece by board index
-    pub fn set_selected(&mut self, idx: &Option<BrdIdx>) {
-        self.selected_idx = *idx;
-    }
-
     /// Get a canvas by element ID
     fn get_canvas(canvas_id: &str) -> HtmlCanvasElement {
         // JS WINDOW
@@ -136,11 +132,11 @@ impl Painter {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl Painter {
 
     /// Default constructor which queries for canvas by ID
-    #[wasm_bindgen(constructor)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(constructor))]
     pub fn new(width: u32, height: u32, canvas_id: &str) -> Painter {
 
         let canvas = Painter::get_canvas(canvas_id);
@@ -209,6 +205,16 @@ impl Painter {
         }
     }
 
+    /// Set selected piece by board index
+    pub fn set_selected(&mut self, idx: &BrdIdx) {
+        self.selected_idx = Option::Some(*idx);
+    }
+
+    /// Clear selected piece by board index
+    pub fn clear_selected(&mut self) {
+        self.selected_idx = None;
+    }
+
     /// Set new square outline colour value
     pub fn set_square_outline(&mut self, value: JsValue) {
         self.square_outline = value;
@@ -245,6 +251,11 @@ impl Painter {
         }
 
         ans
+    }
+
+    pub fn draw_current(&self, game: &Game)
+    {
+        self.draw(game.current_board());
     }
 
     /// Draw a board onto the canvas

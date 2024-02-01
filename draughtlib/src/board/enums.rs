@@ -1,10 +1,12 @@
+#[cfg(target_arch = "wasm32")]
 extern crate wasm_bindgen;
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
 use std::fmt::{Display};
 
 /// Move/Jump, for use in Move
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum MoveType {
@@ -13,7 +15,7 @@ pub enum MoveType {
 }
 
 /// Black/White
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Team {
@@ -41,7 +43,7 @@ impl Display for Team {
 }
 
 /// Man/King
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Strength {
@@ -50,7 +52,7 @@ pub enum Strength {
 }
 
 /// Model board square as Empty/Occupied/Unplayable
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum SquareState {
@@ -70,7 +72,7 @@ impl Display for SquareState {
 }
 
 /// Possible outcomes of trying to move
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Moveable {

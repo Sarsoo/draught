@@ -79,8 +79,9 @@ canvas.addEventListener("click", (event) => {
 function start_game() {
     game = new Game(BOARD_WIDTH, BOARD_HEIGHT, PIECE_ROWS, Team.Black, SEARCH_DEPTH);
     painter = new Painter(CANVAS_WIDTH, CANVAS_HEIGHT, "game-canvas");
-    game.set_painter(painter);
-    game.draw();
+    // game.set_painter(painter);
+    // game.draw();
+    painter.draw_current(game);
 
     clearInterval(wonTimeout);
     updateTeamText();
@@ -107,8 +108,10 @@ function process_canvas_click(cell_coord) {
             clicks.push(cell_coord);
             current_state = GameState.HUMAN_TURN.FROM_SELECTED;
             game.set_selected(cell_coord);
-            game.draw();
-            
+            painter.set_selected(cell_coord);
+            // game.draw();
+            painter.draw_current(game);
+
             break;
             
         // second click of a move
@@ -179,7 +182,9 @@ function process_canvas_click(cell_coord) {
             }
 
             game.clear_selected();
-            game.draw();
+            painter.clear_selected();
+            // game.draw();
+            painter.draw_current(game);
             clicks = [];
             current_state = GameState.HUMAN_TURN.THINKING;
             
