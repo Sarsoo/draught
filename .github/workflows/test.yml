@@ -45,7 +45,7 @@ jobs:
         run: mv target/doc draught_web/www/dist/
 
       - name: Move CNAME file to Staging Directory
-        run: mv docs/CNAME draught_web/www/dist
+        run: mv draught_web/docs/CNAME draught_web/www/dist
 
       - name: Deploy To Pages
         uses: peaceiris/actions-gh-pages@v3
