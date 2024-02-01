@@ -42,16 +42,16 @@ jobs:
         run: cargo doc --no-deps --document-private-items
 
       - name: Move Docs to Staging Directory
-        run: mv target/doc www/dist/
+        run: mv target/doc draught_web/www/dist/
 
       - name: Move CNAME file to Staging Directory
-        run: mv docs/CNAME www/dist
+        run: mv docs/CNAME draught_web/www/dist
 
       - name: Deploy To Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./www/dist
+          publish_dir: ./draught_web/www/dist
 
   build:
     runs-on: ubuntu-latest
