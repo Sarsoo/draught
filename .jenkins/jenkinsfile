@@ -6,12 +6,9 @@ pipeline {
             when { branch 'master' }
             steps {
                 script {
-                    dir('draught_web')
+                    docker.withRegistry('https://registry.sarsoo.xyz', 'git-registry-creds')
                     {
-                        docker.withRegistry('https://registry.sarsoo.xyz', 'git-registry-creds')
-                        {
-                            docker.build("sarsoo/draught:latest").push()
-                        }
+                        docker.build("sarsoo/draught:latest").push()
                     }
                 }
             }

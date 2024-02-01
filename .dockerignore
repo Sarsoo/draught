@@ -1,7 +1,7 @@
 .github
 .jenkins
 .git
-pkg
+draught_web/pkg
 target
 **/dist
 **/node_modules
