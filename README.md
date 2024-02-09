@@ -3,13 +3,15 @@ Draught
 
 ![gof-ci](https://github.com/sarsoo/draught/actions/workflows/test.yml/badge.svg)
 
-## [Try it Out!](https://sarsoo.github.io/draught/)
+## [Try it Out!](https://draught.sarsoo.xyz)
 
 WebAssembly-based checkers game with a minimax-based AI player.
 
 Rust WASM module for game logic with a JS frontend for rendering and processing user input.
 
-![Screenshot](./docs/screenshot.png)
+Read the docs [here](https://draught.sarsoo.xyz/doc/draught/). Read the blog post [here](https://sarsoo.xyz/posts/draught/).
+
+![Screenshot](./draught_web/docs/screenshot.png)
 
 ## Building
 
