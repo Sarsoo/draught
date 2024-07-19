@@ -39,7 +39,7 @@ fn main() {
     info!("       draught");
     info!("======================");
 
-    let mut game = Game::new(args.width, args.height, args.piece_rows, Team::White, args.search);
+    let game = Game::new(args.width, args.height, args.piece_rows, Team::White, args.search);
 
     println!("{}", game.current_board())
 }
