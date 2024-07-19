@@ -10,12 +10,10 @@ use web_sys::CanvasRenderingContext2d;
 use std::f64;
 
 use crate::log;
-use draughtlib::board::{Board, BrdIdx};
-use draughtlib::board::iter::PieceIterator;
+use draughtlib::{Board, BrdIdx, PieceIterator, Game};
 
-use draughtlib::board::enums::Team::*;
-use draughtlib::board::enums::Strength::*;
-use draughtlib::game::Game;
+use draughtlib::Team::*;
+use draughtlib::Strength::*;
 
 /// Default hex colour value for white square background
 const WHITE_SQUARE: &str = "#FFFFFF";

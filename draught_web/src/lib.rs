@@ -8,9 +8,7 @@ pub mod paint;
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
-pub use draughtlib::board::Board;
-pub use draughtlib::game::Game;
-pub use draughtlib::comp::Computer;
+pub use draughtlib::{Board, Game, Computer};
 pub use paint::Painter;
 
 /// Wrap the [`web_sys`] access to the browser console in a macro for easy logging
