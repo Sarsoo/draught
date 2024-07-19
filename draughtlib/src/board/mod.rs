@@ -840,8 +840,8 @@ impl Display for Board {
                     Occupied => write!(string, "{} ", self.cell(idx).occupant.unwrap().team),
                     Unplayable => write!(string, ". "),
                 };
-                if let Err(err) = result {
-                    // log!("Error printing cell state, ({}, {}), {}", i, j, err);
+                if let Err(_err) = result {
+                    // log!("Error printing cell state, ({}, {}), {}", i, j, _err);
                 }
             }
             string.push('\n');
