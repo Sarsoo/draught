@@ -16,6 +16,8 @@ jobs:
         with: 
           github-server-url: https://gitea.sheep-ghoul.ts.net
 
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
@@ -47,6 +49,8 @@ jobs:
       - uses: actions/checkout@v4
         with: 
           github-server-url: https://gitea.sheep-ghoul.ts.net
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
 
       - name: Build Binary
         run: cargo build
