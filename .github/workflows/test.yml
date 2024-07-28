@@ -28,7 +28,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v2
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install Node Modules
         run: npm ci
