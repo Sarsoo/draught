@@ -15,8 +15,8 @@ time_ex = [] # allow time profiling in computer
 
 [dependencies]
 draughtlib = {path = "../draughtlib"}
-wasm-bindgen = "0.2.87"
-indextree = "4.6.0"
+wasm-bindgen = "0.2.92"
+indextree = "4.6.1"
 
 rand = {version = "0.8.5"}
 getrandom = {version = "*", features = ["js"]}
@@ -28,7 +28,7 @@ getrandom = {version = "*", features = ["js"]}
 console_error_panic_hook = { version = "0.1.7", optional = true }
 
 [dependencies.web-sys]
-version = "0.3.45"
+version = "0.3.69"
 features = [
   "console",
 
@@ -40,7 +40,7 @@ features = [
 ]
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3.37"
+wasm-bindgen-test = "0.3.42"
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.
